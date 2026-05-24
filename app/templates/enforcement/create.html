@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}إضافة ملف تنفيذ - {{ product_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3>إضافة ملف تنفيذ</h3>
+    <a href="{{ url_for('enforcement.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right me-1"></i> العودة</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="row g-3">
+                <!-- Step 1: Pick client first -->
+                <div class="col-md-6">
+                    <label class="form-label">الموكل <span class="text-danger">*</span></label>
+                    <select id="clientPicker" class="form-select">
+                        <option value="">— ابحث واختر الموكل أولاً —</option>
+                        {% for cl in clients %}
+                        <option value="{{ cl.id }}" {% if form.get('client_id')|string == cl.id|string %}selected{% endif %}>{{ cl.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- hidden field submitted -->
+                    <input type="hidden" name="client_id" id="clientIdHidden" value="{{ form.get('client_id', '') }}" required>
+                </div>
+
+                <!-- Step 2: Cases filtered by client -->
+                <div class="col-md-6">
+                    <label class="form-label">القضية <span class="text-danger">*</span></label>
+                    <select name="case_id" id="casePicker" class="form-select" required>
+                        <option value="">— اختر الموكل أولاً —</option>
+                        {% if form.get('case_id') %}
+                        {% for c in cases %}
+                        {% if form.get('client_id')|string == c.client_id|string %}
+                        <option value="{{ c.id }}" {% if form.get('case_id')|string == c.id|string %}selected{% endif %}>
+                            {{ c.case_number or '-' }} — {{ (c.subject or '')[:40] }}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <!-- Enforcement Type -->
+                <div class="col-md-4">
+                    <label class="form-label">نوع التنفيذ <span class="text-danger">*</span></label>
+                    <select name="enforcement_type" class="form-select" required>
+                        <option value="">اختر النوع</option>
+                        {% for val, label in enforcement_types %}
+                        <option value="{{ val }}" {% if form.get('enforcement_type') == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Enforcement Number -->
+                <div class="col-md-4">
+                    <label class="form-label">رقم التنفيذ</label>
+                    <input type="text" name="enforcement_number" class="form-control" value="{{ form.get('enforcement_number', '') }}">
+                </div>
+
+                <!-- Enforcement Court -->
+                <div class="col-md-4">
+                    <label class="form-label">محكمة التنفيذ</label>
+                    <input type="text" name="enforcement_court" class="form-control" value="{{ form.get('enforcement_court', '') }}">
+                </div>
+
+                <!-- Executor Name -->
+                <div class="col-md-4">
+                    <label class="form-label">اسم المحضر</label>
+                    <input type="text" name="executor_name" class="form-control" value="{{ form.get('executor_name', '') }}">
+                </div>
+
+                <!-- Total Amount -->
+                <div class="col-md-4">
+                    <label class="form-label">المبلغ الإجمالي <span class="text-danger">*</span></label>
+                    <input type="number" name="total_amount" class="form-control" dir="ltr" step="0.01" value="{{ form.get('total_amount', '') }}" required>
+                </div>
+
+                <!-- Debtor Name -->
+                <div class="col-md-4">
+                    <label class="form-label">اسم المدين</label>
+                    <input type="text" name="debtor_name" class="form-control" value="{{ form.get('debtor_name', '') }}">
+                </div>
+
+                <!-- Start Date -->
+                <div class="col-md-4">
+                    <label class="form-label">تاريخ البدء</label>
+                    <input type="date" name="start_date" class="form-control" dir="ltr" value="{{ form.get('start_date', '') }}">
+                </div>
+
+                <!-- Notes -->
+                <div class="col-12">
+                    <label class="form-label">ملاحظات</label>
+                    <textarea name="notes" class="form-control" rows="3">{{ form.get('notes', '') }}</textarea>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i> حفظ ملف التنفيذ</button>
+                <a href="{{ url_for('enforcement.index') }}" class="btn btn-outline-secondary me-2">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+const clientPicker = document.getElementById('clientPicker');
+const casePicker   = document.getElementById('casePicker');
+const clientHidden = document.getElementById('clientIdHidden');
+
+clientPicker.addEventListener('change', async function () {
+    const clientId = this.value;
+    clientHidden.value = clientId;
+    casePicker.innerHTML = '<option value="">— جارٍ التحميل... —</option>';
+
+    if (!clientId) {
+        casePicker.innerHTML = '<option value="">— اختر الموكل أولاً —</option>';
+        return;
+    }
+
+    const res  = await fetch(`/cases/api/by-client/${clientId}`);
+    const data = await res.json();
+
+    if (data.length === 0) {
+        casePicker.innerHTML = '<option value="">لا توجد قضايا لهذا الموكل</option>';
+        return;
+    }
+
+    casePicker.innerHTML = '<option value="">— اختر القضية —</option>' +
+        data.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+});
+
+// On page load, if client is pre-selected (form re-render after error), trigger cascade
+if (clientPicker.value) clientPicker.dispatchEvent(new Event('change'));
+</script>
+{% endblock %}
+{% endblock %}

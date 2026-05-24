@@ -1,0 +1,82 @@
+{% extends 'admin/base.html' %}
+{% block title %}الإعدادات العامة{% endblock %}
+{% block page_title %}الإعدادات العامة{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header"><i class="bi bi-gear"></i> إعدادات النظام</div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            {# Logo preview + upload field — given top placement since it's visual #}
+            <div class="mb-4">
+                <label class="form-label small fw-semibold">شعار المنتج</label>
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width:72px; height:72px; border-radius:14px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--border)">
+                        {% if values['product_logo_url'] %}
+                            <img src="{{ values['product_logo_url'] }}" alt="logo"
+                                 style="max-width:100%; max-height:100%; object-fit:contain">
+                        {% else %}
+                            <i class="bi bi-image" style="font-size:1.8rem; color: var(--dark-muted)"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <input type="file" name="product_logo_file" class="form-control mb-2"
+                               accept=".png,.jpg,.jpeg,.svg">
+                        <small class="text-muted d-block">ارفع ملف صورة، أو استخدم الرابط أدناه. الملف المرفوع يتغلب على الرابط.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                {% for key, label, default in keys %}
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">{{ label }}</label>
+                    {% if key == 'default_currency' %}
+                    <select name="{{ key }}" class="form-select">
+                        <option value="EGP" {{ 'selected' if values[key] == 'EGP' }}>جنيه مصري (EGP)</option>
+                        <option value="SAR" {{ 'selected' if values[key] == 'SAR' }}>ريال سعودي (SAR)</option>
+                        <option value="USD" {{ 'selected' if values[key] == 'USD' }}>دولار أمريكي (USD)</option>
+                    </select>
+                    {% elif key == 'product_logo_url' %}
+                    <input type="text" name="{{ key }}" value="{{ values[key] }}" class="form-control"
+                           placeholder="https://... أو ارفع ملف أعلاه">
+                    {% elif 'url' in key %}
+                    <input type="url" name="{{ key }}" value="{{ values[key] }}" class="form-control" placeholder="https://...">
+                    {% elif 'email' in key %}
+                    <input type="email" name="{{ key }}" value="{{ values[key] }}" class="form-control">
+                    {% else %}
+                    <input name="{{ key }}" value="{{ values[key] }}" class="form-control">
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="bi bi-check2"></i> حفظ الإعدادات
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3 mt-3">
+    <div class="col-md-4">
+        <a href="{{ url_for('admin.settings_smtp') }}" class="card text-decoration-none h-100" style="color: var(--dark-text)">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-envelope-at" style="font-size:2rem; color: var(--accent)"></i>
+                <h6 class="mt-3 mb-1">إعدادات البريد (SMTP)</h6>
+                <small class="text-muted">تكوين خادم البريد للإشعارات</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ url_for('admin.settings_admins') }}" class="card text-decoration-none h-100" style="color: var(--dark-text)">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-shield-lock" style="font-size:2rem; color: var(--accent)"></i>
+                <h6 class="mt-3 mb-1">إدارة الأدمن</h6>
+                <small class="text-muted">قائمة حسابات الأدمن</small>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

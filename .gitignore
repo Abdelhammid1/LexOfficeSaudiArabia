@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+.env.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads
+app/static/uploads/
+
+# Testing folder
+tests/
+
+# Playwright
+node_modules/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Logs
+*.log
+/tmp/
+
+# IDE
+.vscode/
+.idea/
+
+# Flutter mobile app (separate project)
+lexoffice_mobile/
+
+# Misc files
+"Ibrahim Fakhry"
+"Visual Identity.rar"
+"Visual Identity/"
+"Visual_Identity_extracted/"
+a.pdf
+*.mp4
+*.pdf
+
+# Claude config
+.claude/
