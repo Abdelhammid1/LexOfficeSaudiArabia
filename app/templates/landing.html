@@ -763,11 +763,18 @@ nav {
             gap: 1rem;
         }
 
-        .footer-brand {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--navy);
-        }
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--navy);
+}
+.footer-logo-icon {
+    width: 28px;
+    height: 28px;
+}
 
         .footer-copy {
             font-size: 0.82rem;
@@ -1073,7 +1080,10 @@ nav {
 
 <!-- ── FOOTER ── -->
 <footer>
-    <div class="footer-brand">{{ product_name }} ⚖️</div>
+<div class="footer-brand">
+    <img src="{{ url_for('static', filename='favicon/favicon.svg') }}" alt="" class="footer-logo-icon">
+    {{ product_name }}
+</div>
     <span class="footer-copy">© ٢٠٢٦ {{ product_name }} — جميع الحقوق محفوظة</span>
     <ul class="footer-links">
         <li><a href="#">سياسة الخصوصية</a></li>
