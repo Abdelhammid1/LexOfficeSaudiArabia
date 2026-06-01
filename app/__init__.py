@@ -161,13 +161,13 @@ def _register_context_processors(app):
         try:
             from app.models.admin import SystemSetting
             product_name = SystemSetting.get('product_name', 'المُستشار') or 'المُستشار'
-            product_logo = SystemSetting.get('product_logo_url', '') or '/static/img/logo.svg'
+            product_logo = SystemSetting.get('product_logo_url', '') or '/static/img/logo-mark.svg'
             privacy_url = SystemSetting.get('privacy_url', '') or ''
             terms_url = SystemSetting.get('terms_url', '') or ''
             support_email = SystemSetting.get('support_email', '') or ''
         except Exception:
             product_name = 'المُستشار'
-            product_logo = '/static/img/logo.svg'
+            product_logo = '/static/img/logo-mark.svg'
             privacy_url = ''
             terms_url = ''
             support_email = ''

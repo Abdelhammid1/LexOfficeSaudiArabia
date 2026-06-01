@@ -14,7 +14,7 @@ from app.utils.helpers import save_uploaded_file
 # requirements doc — replaced by the existing contact page.
 GENERAL_KEYS = [
     ('product_name',     'اسم المنتج',                'المُستشار'),
-    ('product_logo_url', 'رابط شعار المنتج',          '/static/img/logo.svg'),
+    ('product_logo_url', 'رابط شعار المنتج',          '/static/img/logo-mark.svg'),
     ('support_email',    'بريد الدعم الفني',          'support@manasety.ai'),
     ('default_currency', 'العملة الافتراضية',         'SAR'),
     ('terms_url',        'رابط شروط الخدمة',          ''),
