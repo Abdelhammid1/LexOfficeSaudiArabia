@@ -1086,9 +1086,9 @@ nav {
 </div>
     <span class="footer-copy">© ٢٠٢٦ {{ product_name }} — جميع الحقوق محفوظة</span>
     <ul class="footer-links">
-        <li><a href="#">سياسة الخصوصية</a></li>
-        <li><a href="#">الشروط والأحكام</a></li>
-        <li><a href="#">تواصل معنا</a></li>
+        <li><a href="{{ privacy_url or url_for('public.privacy') }}">سياسة الخصوصية</a></li>
+        <li><a href="{{ terms_url or url_for('public.terms') }}">الشروط والأحكام</a></li>
+        <li><a href="mailto:{{ support_email or 'support@manasety.ai' }}">تواصل معنا</a></li>
     </ul>
 </footer>
 
