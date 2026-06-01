@@ -176,10 +176,10 @@ def finance_monthly_expenses_create():
         log_finance_action(
             action_type='CREATE', entity_type='OpMonthlyExpense', entity_id=exp.id,
             new_value={'category': cat.display_label, 'amount': float(exp.amount), 'year': exp.year, 'month': exp.month},
-            description=f'مصروف {ARABIC_MONTHS[exp.month]} {exp.year}: {cat.display_label} — {exp.amount} ج.م',
+            description=f'مصروف {ARABIC_MONTHS[exp.month]} {exp.year}: {cat.display_label} — {exp.amount} ر.س',
         )
         db.session.commit()
-        flash(f'تم تسجيل المصروف ({exp.amount} ج.م)', 'success')
+        flash(f'تم تسجيل المصروف ({exp.amount} ر.س)', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'تعذر التسجيل: {e}', 'danger')
@@ -315,7 +315,7 @@ def finance_monthly_expenses_delete(exp_id):
         log_finance_action(
             action_type='DELETE', entity_type='OpMonthlyExpense', entity_id=exp.id,
             old_value={'category': label, 'amount': float(exp.amount), 'year': exp.year, 'month': exp.month},
-            description=f'حذف مصروف: {label} — {exp.amount} ج.م',
+            description=f'حذف مصروف: {label} — {exp.amount} ر.س',
         )
         db.session.delete(exp)
         db.session.commit()

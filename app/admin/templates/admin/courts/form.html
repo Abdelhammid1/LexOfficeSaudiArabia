@@ -26,11 +26,11 @@
                            value="{{ form.name_en or '' }}">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label small fw-semibold">السوق *</label>
-                    <select name="market" class="form-select" required>
-                        <option value="eg" {{ 'selected' if (form.market or 'eg') == 'eg' }}>🇪🇬 مصر</option>
-                        <option value="sa" {{ 'selected' if form.market == 'sa' }}>🇸🇦 السعودية</option>
+                    <label class="form-label small fw-semibold">السوق</label>
+                    <select name="market" class="form-select" disabled>
+                        <option value="sa" selected>🇸🇦 المملكة العربية السعودية</option>
                     </select>
+                    <input type="hidden" name="market" value="sa">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label small fw-semibold">نوع المحكمة *</label>
@@ -41,9 +41,9 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label small fw-semibold">المنطقة / المحافظة</label>
+                    <label class="form-label small fw-semibold">المنطقة</label>
                     <input type="text" name="governorate" class="form-control"
-                           value="{{ form.governorate or '' }}" placeholder="القاهرة / الرياض / ...">
+                           value="{{ form.governorate or '' }}" placeholder="الرياض / مكة المكرمة / المدينة المنورة / ...">
                 </div>
                 <div class="col-12">
                     <div class="form-check form-switch">

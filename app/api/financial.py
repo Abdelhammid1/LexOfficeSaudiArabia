@@ -261,7 +261,7 @@ def api_create_payment():
     notify_tenant_users(
         tenant_id=g.tenant_id,
         notification_type='payment_received',
-        title=f'تم تسجيل دفعة: {amount} ج.م',
+        title=f'تم تسجيل دفعة: {amount} ر.س',
         body=f'الموكل: {payment.client.full_name if payment.client else "-"}',
         priority='success',
         related_type='payment',
@@ -378,7 +378,7 @@ def api_create_invoice():
         tenant_id=g.tenant_id,
         notification_type='general',
         title=f'تم إنشاء فاتورة جديدة: {invoice.invoice_number}',
-        body=f'الإجمالي: {float(invoice.total):.0f} ج.م — الموكل: {invoice.client.full_name if invoice.client else "-"}',
+        body=f'الإجمالي: {float(invoice.total):.0f} ر.س — الموكل: {invoice.client.full_name if invoice.client else "-"}',
         related_type='invoice',
         related_id=invoice.id,
         actor_name=g.current_user.full_name,
@@ -577,7 +577,7 @@ def api_create_expense():
     notify_tenant_users(
         tenant_id=g.tenant_id,
         notification_type='general',
-        title=f'تم تسجيل مصروف: {amount} ج.م',
+        title=f'تم تسجيل مصروف: {amount} ر.س',
         body=f'النوع: {expense_type}',
         related_type='expense',
         related_id=expense.id,

@@ -14,9 +14,10 @@ class SubscriptionPlan(db.Model):
     price_monthly = db.Column(db.Numeric(10, 2), nullable=False)
     price_yearly = db.Column(db.Numeric(10, 2), nullable=False)
     features = db.Column(db.JSON, nullable=True)
-    # Multi-market: 'eg' | 'sa'. Tenants only see plans matching their market.
-    market = db.Column(db.String(2), nullable=False, default='eg', index=True)
-    currency_code = db.Column(db.String(3), nullable=False, default='EGP')
+    # Market: always 'sa' in this deployment. Column retained so historical
+    # filtering / per-market plan dashboards keep working without migration.
+    market = db.Column(db.String(2), nullable=False, default='sa', index=True)
+    currency_code = db.Column(db.String(3), nullable=False, default='SAR')
     # Per-cell content for the choose_plan.html comparison table, keyed by
     # PLAN_COMPARISON_ROWS[*].key in app/utils/market_config.py. Each value is
     # either a string ("حتى 50 قضية"), a bool (renders as ✓/✗), or null
@@ -66,7 +67,7 @@ class SubscriptionPayment(db.Model):
     plan_id = db.Column(db.Integer, db.ForeignKey('subscription_plans.id'), nullable=True)
     invoice_number = db.Column(db.String(50), nullable=True, unique=True, index=True)
     amount = db.Column(db.Numeric(10, 2), nullable=False)
-    # cash / bank_transfer / card / paymob / vodafone_cash / etisalat_cash / manual
+    # cash / bank_transfer / mada / card / stc_pay / apple_pay / manual
     payment_method = db.Column(db.String(30), nullable=False, default='manual')
     payment_reference = db.Column(db.String(200), nullable=True)
     issue_date = db.Column(db.Date, nullable=True)

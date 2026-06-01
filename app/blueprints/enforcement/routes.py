@@ -86,7 +86,7 @@ def create():
             tenant_id=g.tenant_id,
             notification_type='general',
             title=f'تم إضافة ملف تنفيذ جديد: {enforcement.enforcement_number or "-"}',
-            body=f'المبلغ: {total_amount} ج.م',
+            body=f'المبلغ: {total_amount} ر.س',
             related_type='enforcement',
             related_id=enforcement.id,
             actor_name=g.current_user.full_name,
@@ -144,7 +144,7 @@ def add_collection(id):
     notify_tenant_users(
         tenant_id=g.tenant_id,
         notification_type='payment_received',
-        title=f'تم تحصيل مبلغ {amount} ج.م',
+        title=f'تم تحصيل مبلغ {amount} ر.س',
         body=f'ملف التنفيذ: {enforcement.enforcement_number or "-"}',
         priority='success',
         related_type='enforcement',

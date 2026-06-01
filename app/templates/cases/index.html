@@ -208,7 +208,7 @@
             <td>
               {% set bal = case.remaining_balance %}
               {% if bal and bal > 0 %}
-              <span style="font-size:11.5px;color:var(--red);font-weight:500">{{ '{:,.0f}'.format(bal|float) }} {{ market_config.currency_symbol_ar if market_config else 'ج.م' }}</span>
+              <span style="font-size:11.5px;color:var(--red);font-weight:500">{{ '{:,.0f}'.format(bal|float) }} {{ market_config.currency_symbol_ar if market_config else 'ر.س' }}</span>
               {% else %}
               <span class="ct" style="color:var(--tm)">—</span>
               {% endif %}

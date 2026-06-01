@@ -1,8 +1,8 @@
-"""LexOffice Super Admin Panel — Blueprint registration.
+"""المُستشار Super Admin Panel — Blueprint registration.
 
 Routing modes (controlled by ADMIN_URL_MODE env var):
   - prefix    : admin lives at /admin/* (default — works in dev and on PythonAnywhere)
-  - subdomain : admin lives at adminlexoffice.<SERVER_NAME>/* (production)
+  - subdomain : admin lives at adminalmustashar.<SERVER_NAME>/* (production)
 
 The same blueprint is used in both modes; only the URL prefix / subdomain differ.
 """
@@ -16,7 +16,7 @@ if ADMIN_URL_MODE == 'subdomain':
     admin_bp = Blueprint(
         'admin',
         __name__,
-        subdomain='adminlexoffice',
+        subdomain='adminalmustashar',
         template_folder='templates',
         static_folder='static',
         static_url_path='/admin-static',
@@ -41,6 +41,7 @@ from app.admin import features      # noqa: E402, F401
 from app.admin import billing       # noqa: E402, F401
 from app.admin import notifications # noqa: E402, F401
 from app.admin import settings      # noqa: E402, F401
+from app.admin import legal_pages   # noqa: E402, F401
 from app.admin import audit         # noqa: E402, F401
 from app.admin import roles         # noqa: E402, F401
 from app.admin import courts        # noqa: E402, F401

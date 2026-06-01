@@ -35,7 +35,7 @@
                 <tr>
                     <td class="fw-bold" style="color: var(--accent)">{{ item.expense_name }}</td>
                     <td class="text-end">
-                        {% if item.estimated_amount %}{{ '{:,.0f}'.format(item.estimated_amount) }} <small class="text-muted">ج.م</small>{% else %}—{% endif %}
+                        {% if item.estimated_amount %}{{ '{:,.0f}'.format(item.estimated_amount) }} <small class="text-muted">ر.س</small>{% else %}—{% endif %}
                     </td>
                     <td>
                         {% if item.recurrence == 'monthly' %}<span class="badge badge-soft-info">شهري</span>
@@ -84,7 +84,7 @@
                             <input type="text" name="expense_name" class="form-control" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">المبلغ التقديري (ج.م)</label>
+                            <label class="form-label">المبلغ التقديري (ر.س)</label>
                             <input type="number" step="0.01" min="0" name="estimated_amount" class="form-control">
                         </div>
                         <div class="col-md-6">

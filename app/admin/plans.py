@@ -139,7 +139,7 @@ def plans_edit(plan_id):
         plan.self_service = request.form.get('self_service') == 'on'
         # Market and currency are editable but warn if any tenants are attached.
         new_market = normalize_market(request.form.get('market') or plan.market)
-        new_currency = (request.form.get('currency_code') or plan.currency_code or 'EGP').upper()
+        new_currency = (request.form.get('currency_code') or plan.currency_code or 'SAR').upper()
         if (new_market != plan.market or new_currency != plan.currency_code) and tenant_count > 0:
             flash(f'تنبيه: تم تغيير السوق/العملة على خطة عليها {tenant_count} مكتب — تأكد من التأثير', 'warning')
         plan.market = new_market

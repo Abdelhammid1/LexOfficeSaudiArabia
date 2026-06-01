@@ -81,11 +81,11 @@ td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
                 {{ invoice.period_start }} → {{ invoice.period_end }}
                 {% else %}—{% endif %}
             </td>
-            <td>{{ invoice.amount }} ج.م</td>
+            <td>{{ invoice.amount }} ر.س</td>
         </tr>
         <tr class="total-row">
             <td colspan="2" style="text-align: left">الإجمالي</td>
-            <td>{{ invoice.amount }} ج.م</td>
+            <td>{{ invoice.amount }} ر.س</td>
         </tr>
     </tbody>
 </table>
@@ -98,7 +98,7 @@ td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
 
 {% if invoice.status == 'refunded' %}
 <div class="notes" style="background: #fef3c7; border-color: #f59e0b;">
-    <strong>تم استرداد {{ invoice.refund_amount }} ج.م في {{ invoice.refunded_at.strftime('%Y-%m-%d') if invoice.refunded_at }}</strong>
+    <strong>تم استرداد {{ invoice.refund_amount }} ر.س في {{ invoice.refunded_at.strftime('%Y-%m-%d') if invoice.refunded_at }}</strong>
     {% if invoice.refund_reason %}<br>السبب: {{ invoice.refund_reason }}{% endif %}
 </div>
 {% endif %}

@@ -112,6 +112,13 @@
                 <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm w-100">
                     <i class="bi bi-box-arrow-right me-1"></i> خروج
                 </a>
+                <div class="text-center mt-2" style="font-size: 0.72rem;">
+                    <a href="{{ terms_url or url_for('public.terms') }}" target="_blank"
+                       class="text-white-50 text-decoration-none">الشروط</a>
+                    <span class="text-white-50 mx-1">·</span>
+                    <a href="{{ privacy_url or url_for('public.privacy') }}" target="_blank"
+                       class="text-white-50 text-decoration-none">الخصوصية</a>
+                </div>
             </div>
         </nav>
 

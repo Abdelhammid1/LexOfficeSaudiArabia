@@ -1,4 +1,4 @@
-/* LexOffice Main JavaScript */
+/* المُستشار Main JavaScript */
 
 document.addEventListener('DOMContentLoaded', function() {
 

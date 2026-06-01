@@ -7,13 +7,13 @@
     <div class="col-md-4">
         <div class="stat-card">
             <div class="label">إجمالي المدفوع</div>
-            <div class="value text-success">{{ '%.0f' | format(totals.paid) }} <small style="font-size:1rem">ج.م</small></div>
+            <div class="value text-success">{{ '%.0f' | format(totals.paid) }} <small style="font-size:1rem">ر.س</small></div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="stat-card">
             <div class="label">المعلق / الغير مدفوع</div>
-            <div class="value text-warning">{{ '%.0f' | format(totals.unpaid) }} <small style="font-size:1rem">ج.م</small></div>
+            <div class="value text-warning">{{ '%.0f' | format(totals.unpaid) }} <small style="font-size:1rem">ر.س</small></div>
         </div>
     </div>
     <div class="col-md-4">
@@ -101,7 +101,7 @@
                         </a>
                     </td>
                     <td class="small">{{ inv.plan.name_ar if inv.plan else '—' }}</td>
-                    <td class="fw-bold text-success">{{ inv.amount }} ج.م</td>
+                    <td class="fw-bold text-success">{{ inv.amount }} ر.س</td>
                     <td><span class="badge badge-soft-secondary">{{ inv.payment_type }}</span></td>
                     <td>
                         {% if inv.status == 'paid' %}<span class="badge badge-soft-success">مدفوعة</span>

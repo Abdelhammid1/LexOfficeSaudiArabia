@@ -27,7 +27,7 @@ class Tenant(db.Model):
     city = db.Column(db.String(120), nullable=True)
     # 'eg' | 'sa' — frozen at registration from g.market. Drives plan list,
     # phone validation, currency display, courts dropdown, bar body label.
-    market = db.Column(db.String(2), nullable=False, default='eg', index=True)
+    market = db.Column(db.String(2), nullable=False, default='sa', index=True)
     # Tracks the current calendar month (YYYY-MM) for which we already sent
     # the 80% AI-quota warning email. Reset implicitly on month rollover by
     # comparing against current month before sending again.

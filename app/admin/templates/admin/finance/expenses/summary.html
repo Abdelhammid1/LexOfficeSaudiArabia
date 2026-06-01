@@ -21,7 +21,7 @@
                     — كل التاريخ
                 {% endif %}
             </div>
-            <div class="value text-warning">{{ '{:,.0f}'.format(total_amount) }} <small style="font-size:1rem">ج.م</small></div>
+            <div class="value text-warning">{{ '{:,.0f}'.format(total_amount) }} <small style="font-size:1rem">ر.س</small></div>
         </div>
     </div>
     <div class="col-md-6">
@@ -75,7 +75,7 @@
                     <td class="text-muted">{{ r.category_name }}</td>
                     <td class="fw-bold" style="color: var(--accent)">{{ r.item_name }}</td>
                     <td class="text-center"><span class="badge badge-soft-info">{{ r.count }}</span></td>
-                    <td class="text-end fw-bold text-warning">{{ '{:,.0f}'.format(r.total) }} <small class="text-muted">ج.م</small></td>
+                    <td class="text-end fw-bold text-warning">{{ '{:,.0f}'.format(r.total) }} <small class="text-muted">ر.س</small></td>
                     <td class="text-muted small">{{ r.last_date.strftime('%d/%m/%Y') if r.last_date else '—' }}</td>
                 </tr>
                 {% else %}
@@ -89,7 +89,7 @@
             <tfoot class="fw-bold" style="background: rgba(7,143,210,0.06)">
                 <tr>
                     <td colspan="3" class="text-end">الإجمالي</td>
-                    <td class="text-end text-warning">{{ '{:,.0f}'.format(total_amount) }} ج.م</td>
+                    <td class="text-end text-warning">{{ '{:,.0f}'.format(total_amount) }} ر.س</td>
                     <td></td>
                 </tr>
             </tfoot>

@@ -137,7 +137,7 @@ def _register_context_processors(app):
     @app.context_processor
     def inject_globals():
         from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
-        from app.utils.helpers import egypt_today, generate_chatwoot_token
+        from app.utils.helpers import ksa_today, generate_chatwoot_token
         current_user = None
         unread_count = 0
         chatwoot_hash = None
@@ -160,14 +160,14 @@ def _register_context_processors(app):
         # break before settings exist.
         try:
             from app.models.admin import SystemSetting
-            product_name = SystemSetting.get('product_name', 'LexOffice') or 'LexOffice'
-            product_logo = SystemSetting.get('product_logo_url', '') or ''
+            product_name = SystemSetting.get('product_name', 'المُستشار') or 'المُستشار'
+            product_logo = SystemSetting.get('product_logo_url', '') or '/static/img/logo.svg'
             privacy_url = SystemSetting.get('privacy_url', '') or ''
             terms_url = SystemSetting.get('terms_url', '') or ''
             support_email = SystemSetting.get('support_email', '') or ''
         except Exception:
-            product_name = 'LexOffice'
-            product_logo = ''
+            product_name = 'المُستشار'
+            product_logo = '/static/img/logo.svg'
             privacy_url = ''
             terms_url = ''
             support_email = ''
@@ -186,7 +186,7 @@ def _register_context_processors(app):
         return dict(
             current_user=current_user,
             now=datetime.utcnow,
-            today=egypt_today(),
+            today=ksa_today(),
             unread_count=unread_count,
             chatwoot_hash=chatwoot_hash,
             product_name=product_name,

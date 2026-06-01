@@ -63,8 +63,7 @@ class Client(db.Model, EncryptedFieldsMixin):
 
     @national_id.setter
     def national_id(self, value):
-        # Normalize: strip + drop common formatting chars. Egyptian IDs are
-        # 14 digits, Saudi IDs are 10 — both are digits-only when "real".
+        # Normalize: digits only. Saudi National ID / Iqama is 10 digits.
         if value is None or value == '':
             self._national_id = None
             self._national_id_idx = None

@@ -46,7 +46,7 @@
                     {% else %}— كل التاريخ{% endif %}
                 </div>
                 <div style="font-size:2.8rem; font-weight:800; color:{% if net >= 0 %}#34d399{% else %}#f87171{% endif %}">
-                    {{ '{:,.0f}'.format(net) }} <span style="font-size:1.4rem">ج.م</span>
+                    {{ '{:,.0f}'.format(net) }} <span style="font-size:1.4rem">ر.س</span>
                 </div>
                 <small class="text-muted">= الإيرادات − (رواتب باقية + قروض باقية + مصاريف الفترة)</small>
             </div>
@@ -78,7 +78,7 @@
             <div class="d-flex justify-content-between">
                 <small class="text-muted">الباقي:</small>
                 <span class="fw-bold {{ 'text-danger' if payroll.balance > 0 else 'text-success' }}">
-                    {{ '{:,.0f}'.format(payroll.balance) }} ج.م
+                    {{ '{:,.0f}'.format(payroll.balance) }} ر.س
                 </span>
             </div>
             <small class="text-muted d-block mt-2">{{ payroll.count }} موظف</small>
@@ -104,7 +104,7 @@
             <div class="d-flex justify-content-between">
                 <small class="text-muted">الباقي:</small>
                 <span class="fw-bold {{ 'text-danger' if loans.balance > 0 else 'text-success' }}">
-                    {{ '{:,.0f}'.format(loans.balance) }} ج.م
+                    {{ '{:,.0f}'.format(loans.balance) }} ر.س
                 </span>
             </div>
             <small class="text-muted d-block mt-2">{{ loans.count }} قرض</small>
@@ -119,7 +119,7 @@
                 <a href="{{ url_for('admin.finance_expenses_summary') }}" class="text-muted small"><i class="bi bi-arrow-left-circle"></i></a>
             </div>
             <div class="value text-warning" style="font-size:1.6rem">
-                {{ '{:,.0f}'.format(expenses_total) }} <small style="font-size:0.85rem">ج.م</small>
+                {{ '{:,.0f}'.format(expenses_total) }} <small style="font-size:0.85rem">ر.س</small>
             </div>
             <small class="text-muted d-block mt-2">
                 {% if year_filter and month_filter %}{{ arabic_months[month_filter] }} {{ year_filter }}
@@ -137,7 +137,7 @@
                 <a href="{{ url_for('admin.finance_income_list') }}" class="text-muted small"><i class="bi bi-arrow-left-circle"></i></a>
             </div>
             <div class="value text-success" style="font-size:1.6rem">
-                {{ '{:,.0f}'.format(income_total) }} <small style="font-size:0.85rem">ج.م</small>
+                {{ '{:,.0f}'.format(income_total) }} <small style="font-size:0.85rem">ر.س</small>
             </div>
             <small class="text-muted d-block mt-2">
                 {% if year_filter and month_filter %}{{ arabic_months[month_filter] }} {{ year_filter }}

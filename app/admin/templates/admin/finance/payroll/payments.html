@@ -26,7 +26,7 @@
                     <option value="" disabled selected>— اختر موظف —</option>
                     {% for emp in employees %}
                     <option value="{{ emp.id }}" data-salary="{{ emp.monthly_salary }}">
-                        {{ emp.full_name }} ({{ '{:,.0f}'.format(emp.monthly_salary) }} ج.م/شهر)
+                        {{ emp.full_name }} ({{ '{:,.0f}'.format(emp.monthly_salary) }} ر.س/شهر)
                     </option>
                     {% endfor %}
                 </select>
@@ -36,7 +36,7 @@
                 <input type="date" name="payment_date" class="form-control" required value="{{ today.isoformat() }}">
             </div>
             <div class="col-md-3">
-                <label class="form-label">المبلغ المدفوع (ج.م) <span class="text-danger">*</span></label>
+                <label class="form-label">المبلغ المدفوع (ر.س) <span class="text-danger">*</span></label>
                 <input type="number" step="0.01" min="0" name="amount" class="form-control" required>
             </div>
             <div class="col-md-2 d-flex align-items-end">
@@ -72,7 +72,7 @@
                 <tr>
                     <td class="fw-bold" style="color: var(--accent)">{{ p.employee.full_name if p.employee else '— محذوف —' }}</td>
                     <td>{{ p.payment_date.strftime('%d/%m/%Y') }}</td>
-                    <td class="text-end fw-bold text-success">{{ '{:,.0f}'.format(p.amount) }} <small class="text-muted">ج.م</small></td>
+                    <td class="text-end fw-bold text-success">{{ '{:,.0f}'.format(p.amount) }} <small class="text-muted">ر.س</small></td>
                     <td class="text-muted small">{{ p.notes or '—' }}</td>
                     <td class="text-center">
                         {% if g.current_admin.has_admin_permission('finance_payroll', 'delete') %}

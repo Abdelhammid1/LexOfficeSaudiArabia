@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}المالية - {{ product_name }}{% endblock %}
 
-{% set _curr = market_config.currency_symbol_ar if market_config else 'ج.م' %}
+{% set _curr = market_config.currency_symbol_ar if market_config else 'ر.س' %}
 {% set status_class = {'draft':'b-draft','sent':'b-due','partially_paid':'b-pen','paid':'b-paid','overdue':'b-over','cancelled':'b-arc'} %}
 {% set inv_status_map = dict(invoice_statuses) %}
 {% set exp_type_map = dict(expense_types) %}

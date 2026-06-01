@@ -120,7 +120,7 @@ def forgot_password():
             admin.otp_expires_at = datetime.utcnow() + timedelta(minutes=15)
             db.session.commit()
             from app.models.admin import SystemSetting
-            product_name = SystemSetting.get('product_name', 'LexOffice') or 'LexOffice'
+            product_name = SystemSetting.get('product_name', 'المُستشار') or 'المُستشار'
             html = f"""
             <div dir='rtl' style='font-family: Tajawal, Arial; padding: 20px;'>
                 <h2>إعادة تعيين كلمة المرور — {product_name} Admin</h2>

@@ -58,7 +58,7 @@ def api_clients_create():
 
     national_id = (data.get('national_id') or '').strip()
     if national_id and not validate_national_id(national_id):
-        errors['national_id'] = 'الرقم القومي يجب أن يكون 14 رقم'
+        errors['national_id'] = 'رقم الهوية يجب أن يكون 10 أرقام'
 
     phone = (data.get('phone_primary') or '').strip()
     if phone and not validate_phone(phone):
@@ -148,7 +148,7 @@ def api_clients_update(id):
 
     national_id = (data.get('national_id') or '').strip()
     if national_id and not validate_national_id(national_id):
-        errors['national_id'] = 'الرقم القومي يجب أن يكون 14 رقم'
+        errors['national_id'] = 'رقم الهوية يجب أن يكون 10 أرقام'
 
     phone = (data.get('phone_primary') or '').strip()
     if phone and not validate_phone(phone):

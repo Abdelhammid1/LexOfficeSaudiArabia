@@ -161,7 +161,7 @@
 {% else %}{% set _hello = 'مساء الخير' %}{% endif %}
 
 {% set _first = (_user.full_name or _user.email).split(' ')[0] if _user else '' %}
-{% set _curr = market_config.currency_symbol_ar if market_config else 'ج.م' %}
+{% set _curr = market_config.currency_symbol_ar if market_config else 'ر.س' %}
 
 <div class="lex-dash">
 

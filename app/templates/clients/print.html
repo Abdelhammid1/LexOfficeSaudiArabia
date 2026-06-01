@@ -43,7 +43,7 @@
 <section>
     <h2>البيانات الشخصية</h2>
     <div class="grid">
-        {% if client.national_id %}<div class="field"><label>الرقم القومي</label><span>{{ client.national_id }}</span></div>{% endif %}
+        {% if client.national_id %}<div class="field"><label>رقم الهوية</label><span>{{ client.national_id }}</span></div>{% endif %}
         {% if client.date_of_birth %}<div class="field"><label>تاريخ الميلاد</label><span>{{ client.date_of_birth.strftime('%Y-%m-%d') }}</span></div>{% endif %}
         {% if client.nationality %}<div class="field"><label>الجنسية</label><span>{{ client.nationality }}</span></div>{% endif %}
         {% if client.profession %}<div class="field"><label>المهنة</label><span>{{ client.profession }}</span></div>{% endif %}
@@ -59,9 +59,9 @@
 <section>
     <h2>الملخص المالي</h2>
     <div class="grid">
-        <div class="field"><label>إجمالي الأتعاب</label><span>{{ client.total_fees|int }} ج.م</span></div>
-        <div class="field"><label>إجمالي المدفوع</label><span>{{ client.total_paid|int }} ج.م</span></div>
-        <div class="field"><label>المتبقي</label><span>{{ client.balance|int }} ج.م</span></div>
+        <div class="field"><label>إجمالي الأتعاب</label><span>{{ client.total_fees|int }} ر.س</span></div>
+        <div class="field"><label>إجمالي المدفوع</label><span>{{ client.total_paid|int }} ر.س</span></div>
+        <div class="field"><label>المتبقي</label><span>{{ client.balance|int }} ر.س</span></div>
     </div>
 </section>
 
@@ -81,7 +81,7 @@
                 <td>{{ type_ar.get(case.case_type, case.case_type) }}</td>
                 <td><span class="badge badge-{{ 'success' if case.status == 'active' else 'danger' if case.status == 'closed' else 'secondary' }}">{{ status_ar.get(case.status, case.status) }}</span></td>
                 <td>{{ case.responsible_lawyer.full_name if case.responsible_lawyer else '-' }}</td>
-                <td>{{ case.fee_amount|int if case.fee_amount else '-' }} ج.م</td>
+                <td>{{ case.fee_amount|int if case.fee_amount else '-' }} ر.س</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -99,7 +99,7 @@
             {% for p in payments %}
             <tr>
                 <td>{{ p.payment_date.strftime('%Y-%m-%d') if p.payment_date else '-' }}</td>
-                <td>{{ p.amount|int }} ج.م</td>
+                <td>{{ p.amount|int }} ر.س</td>
                 <td>{{ p.payment_method or '-' }}</td>
                 <td>{{ p.notes or '' }}</td>
             </tr>

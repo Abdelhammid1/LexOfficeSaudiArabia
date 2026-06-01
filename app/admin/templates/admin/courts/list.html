@@ -5,15 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div class="d-flex align-items-center gap-2 flex-wrap">
-        <p class="text-muted mb-0 small">قائمة المحاكم لكل سوق — تظهر للمكاتب في صفحة إعداد المكتب</p>
-        <div class="btn-group btn-group-sm" role="group" aria-label="Market filter">
-            <a href="{{ url_for('admin.courts_list') }}"
-               class="btn {{ 'btn-info' if not filter_market else 'btn-outline-info' }}">الكل</a>
-            <a href="{{ url_for('admin.courts_list', market='eg') }}"
-               class="btn {{ 'btn-info' if filter_market == 'eg' else 'btn-outline-info' }}">🇪🇬 مصر</a>
-            <a href="{{ url_for('admin.courts_list', market='sa') }}"
-               class="btn {{ 'btn-info' if filter_market == 'sa' else 'btn-outline-info' }}">🇸🇦 السعودية</a>
-        </div>
+        <p class="text-muted mb-0 small">قائمة المحاكم — تظهر للمكاتب في صفحة إعداد المكتب</p>
     </div>
     <div>
         <a href="{{ url_for('admin.courts_create') }}" class="btn btn-sm btn-primary">
@@ -41,7 +33,7 @@
                     <th>السوق</th>
                     <th>الاسم</th>
                     <th>نوع المحكمة</th>
-                    <th>المنطقة / المحافظة</th>
+                    <th>المنطقة</th>
                     <th>نشطة؟</th>
                     <th></th>
                 </tr>

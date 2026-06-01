@@ -1,34 +1,19 @@
 """Per-market configuration: currency, phone format, bar body label, plan comparison rows.
 
-Markets are identified by 2-letter lowercase codes ('eg', 'sa'). The active market for
-a given request is exposed as `g.market` (set by the before_request hook in app/__init__.py)
-and post-signup uses `tenant.market` (frozen at registration time).
+The platform is configured for the Saudi market only. The historical 'eg' /
+multi-market plumbing remains in place so that downstream code (tenant.market,
+g.market) keeps working without modification — it just always resolves to 'sa'.
 """
 
-DEFAULT_MARKET = 'eg'
-SUPPORTED_MARKETS = ('eg', 'sa')
+DEFAULT_MARKET = 'sa'
+SUPPORTED_MARKETS = ('sa',)
 
 
 MARKET_CONFIG = {
-    'eg': {
-        'code': 'eg',
-        'country_code_iso': 'EG',
-        'name_ar': 'مصر',
-        'name_en': 'Egypt',
-        'currency_code': 'EGP',
-        'currency_symbol_ar': 'ج.م',
-        'phone_regex': r'^01[0125]\d{8}$',
-        'phone_placeholder': '01xxxxxxxxx',
-        'phone_country_prefix': '+20',
-        'bar_body_ar': 'نقابة المحامين',
-        'bar_registration_label_ar': 'رقم القيد بالنقابة',
-        'timezone': 'Africa/Cairo',
-        'governorate_label_ar': 'المحافظة',
-    },
     'sa': {
         'code': 'sa',
         'country_code_iso': 'SA',
-        'name_ar': 'السعودية',
+        'name_ar': 'المملكة العربية السعودية',
         'name_en': 'Saudi Arabia',
         'currency_code': 'SAR',
         'currency_symbol_ar': 'ر.س',
@@ -71,13 +56,12 @@ PLAN_COMPARISON_ROWS = [
 
 
 def normalize_market(value):
-    """Coerce any input to a supported market code, falling back to default."""
-    if not value:
-        return DEFAULT_MARKET
-    v = str(value).strip().lower()
-    return v if v in SUPPORTED_MARKETS else DEFAULT_MARKET
+    """Coerce any input to the supported market. Single-market deployment, so
+    always returns 'sa' — but the signature stays put so downstream callers
+    don't need to change."""
+    return DEFAULT_MARKET
 
 
 def get_config(market):
-    """Return the config dict for a market, falling back to default."""
-    return MARKET_CONFIG[normalize_market(market)]
+    """Return the config dict for a market. Always SA in this deployment."""
+    return MARKET_CONFIG[DEFAULT_MARKET]

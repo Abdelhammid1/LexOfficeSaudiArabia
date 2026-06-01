@@ -69,10 +69,10 @@ def finance_payroll_create():
             entity_type='OpPayrollPayment',
             entity_id=payment.id,
             new_value={'employee': emp.full_name, 'amount': float(payment.amount), 'date': str(payment.payment_date)},
-            description=f'دفعة راتب: {emp.full_name} — {payment.amount} ج.م',
+            description=f'دفعة راتب: {emp.full_name} — {payment.amount} ر.س',
         )
         db.session.commit()
-        flash(f'تم تسجيل دفعة {payment.amount} ج.م لـ {emp.full_name}', 'success')
+        flash(f'تم تسجيل دفعة {payment.amount} ر.س لـ {emp.full_name}', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'تعذر تسجيل الدفعة: {e}', 'danger')
@@ -95,7 +95,7 @@ def finance_payroll_delete(payment_id):
             entity_type='OpPayrollPayment',
             entity_id=payment.id,
             old_value={'employee': emp_name, 'amount': float(amount), 'date': str(payment.payment_date)},
-            description=f'حذف دفعة راتب: {emp_name} — {amount} ج.م',
+            description=f'حذف دفعة راتب: {emp_name} — {amount} ر.س',
         )
         db.session.delete(payment)
         db.session.commit()

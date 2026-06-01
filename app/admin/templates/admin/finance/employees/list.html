@@ -17,7 +17,7 @@
         </select>
     </div>
     <div class="col-md-6">
-        <label class="form-label">الراتب الشهري (ج.م) <span class="text-danger">*</span></label>
+        <label class="form-label">الراتب الشهري (ر.س) <span class="text-danger">*</span></label>
         <input type="number" step="0.01" min="0" name="monthly_salary" class="form-control" required
                value="{{ emp.monthly_salary if emp else '' }}">
     </div>
@@ -84,7 +84,7 @@
                         {% elif emp.employment_type == 'freelance' %}<span class="badge badge-soft-warning">Freelance</span>
                         {% else %}<span class="badge badge-soft-secondary">Part-time</span>{% endif %}
                     </td>
-                    <td class="text-end fw-bold">{{ '{:,.0f}'.format(emp.monthly_salary) }} <small class="text-muted">ج.م</small></td>
+                    <td class="text-end fw-bold">{{ '{:,.0f}'.format(emp.monthly_salary) }} <small class="text-muted">ر.س</small></td>
                     <td>{{ emp.joined_at.strftime('%d/%m/%Y') }}</td>
                     <td class="text-muted">{{ emp.contact_phone or '—' }}</td>
                     <td>

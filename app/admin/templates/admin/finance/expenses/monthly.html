@@ -41,7 +41,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label">المبلغ (ج.م) <span class="text-danger">*</span></label>
+                <label class="form-label">المبلغ (ر.س) <span class="text-danger">*</span></label>
                 <input type="number" step="0.01" min="0" name="amount" class="form-control" required>
             </div>
             <div class="col-md-2 d-flex align-items-end">
@@ -111,7 +111,7 @@
                     <td>{{ arabic_months[e.month] }} {{ e.year }}</td>
                     <td class="text-muted">{{ e.category.category_name if e.category else '—' }}</td>
                     <td class="fw-bold" style="color: var(--accent)">{{ e.category.item_name if e.category else '— محذوف —' }}</td>
-                    <td class="text-end fw-bold text-warning">{{ '{:,.0f}'.format(e.amount) }} <small class="text-muted">ج.م</small></td>
+                    <td class="text-end fw-bold text-warning">{{ '{:,.0f}'.format(e.amount) }} <small class="text-muted">ر.س</small></td>
                     <td>{{ e.payment_date.strftime('%d/%m/%Y') if e.payment_date else '—' }}</td>
                     <td class="text-muted small" style="max-width:200px">{{ e.notes or '—' }}</td>
                     <td class="text-center">
@@ -205,7 +205,7 @@
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label small">المبلغ (ج.م) <span class="text-danger">*</span></label>
+            <label class="form-label small">المبلغ (ر.س) <span class="text-danger">*</span></label>
             <input type="number" step="0.01" name="amount" id="editAmount" class="form-control" required>
           </div>
           <div class="col-md-6">

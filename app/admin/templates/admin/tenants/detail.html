@@ -208,7 +208,7 @@
                 <tr>
                     <td class="small">{{ p.invoice_number or ('#' + p.id|string) }}</td>
                     <td>{{ p.plan.name_ar if p.plan else '—' }}</td>
-                    <td class="text-success fw-bold">{{ p.amount }} ج.م</td>
+                    <td class="text-success fw-bold">{{ p.amount }} ر.س</td>
                     <td><span class="badge badge-soft-secondary">{{ p.payment_type }}</span></td>
                     <td>
                         {% if p.status == 'paid' %}<span class="badge badge-soft-success">مدفوعة</span>
@@ -431,7 +431,7 @@
                 <label class="form-label small">اختر الخطة الجديدة</label>
                 <select name="plan_id" class="form-select" required>
                     {% for p in plans %}
-                    <option value="{{ p.id }}" {{ 'selected' if tenant.subscription_plan_id == p.id }}>{{ p.name_ar }} ({{ p.price_monthly }} ج.م / شهر)</option>
+                    <option value="{{ p.id }}" {{ 'selected' if tenant.subscription_plan_id == p.id }}>{{ p.name_ar }} ({{ p.price_monthly }} ر.س / شهر)</option>
                     {% endfor %}
                 </select>
             </div>

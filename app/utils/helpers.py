@@ -1,4 +1,4 @@
-"""Helper functions for LexOffice."""
+"""Helper functions for المُستشار."""
 import os
 import secrets
 import uuid
@@ -28,17 +28,24 @@ def generate_chatwoot_token(user_id) -> str:
         hashlib.sha256,
     ).hexdigest()
 
-EGYPT_TZ = ZoneInfo('Africa/Cairo')
+KSA_TZ = ZoneInfo('Asia/Riyadh')
 
 
-def egypt_today():
-    """Return today's date in Egypt timezone (Africa/Cairo)."""
-    return datetime.now(EGYPT_TZ).date()
+def ksa_today():
+    """Return today's date in KSA timezone (Asia/Riyadh)."""
+    return datetime.now(KSA_TZ).date()
 
 
-def egypt_now():
-    """Return current datetime in Egypt timezone."""
-    return datetime.now(EGYPT_TZ)
+def ksa_now():
+    """Return current datetime in KSA timezone."""
+    return datetime.now(KSA_TZ)
+
+
+# Back-compat aliases — legacy call-sites used egypt_today/egypt_now before the
+# platform was scoped to Saudi Arabia. They now resolve to Riyadh time. Prefer
+# ksa_today/ksa_now for any new code.
+egypt_today = ksa_today
+egypt_now = ksa_now
 
 
 def generate_otp():
@@ -80,8 +87,8 @@ def get_file_size(file_path):
     return 0
 
 
-def format_currency(amount, currency='ج.م'):
-    """Format number as Egyptian currency."""
+def format_currency(amount, currency='ر.س'):
+    """Format number as Saudi Riyal."""
     if amount is None:
         return f'0 {currency}'
     return f'{float(amount):,.2f} {currency}'
@@ -99,15 +106,17 @@ def get_date_display(d, include_time=False):
 
 
 def calculate_appeal_deadline(judgment_date, appeal_type):
-    """Calculate appeal deadline based on Egyptian law.
+    """Default appeal deadline reminder under نظام المرافعات الشرعية (KSA).
 
-    - استئناف (Appeal): 40 days from judgment date
-    - نقض (Cassation): 60 days from judgment date
+    - استئناف (Appeal): 30 days from judgment date
+    - نقض / التماس إعادة النظر (Cassation / Reconsideration): 30 days
+
+    These are sensible defaults for an in-app reminder; user can override
+    on the judgment record for the specific case (e.g. summary / urgent
+    rulings which use shorter periods).
     """
-    if appeal_type == 'appeal':
-        return judgment_date + timedelta(days=40)
-    elif appeal_type == 'cassation':
-        return judgment_date + timedelta(days=60)
+    if appeal_type in ('appeal', 'cassation'):
+        return judgment_date + timedelta(days=30)
     return None
 
 

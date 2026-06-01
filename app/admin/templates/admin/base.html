@@ -421,8 +421,13 @@
                 {% endif %}
                 {% if g.current_admin.has_admin_permission('settings','view') %}
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('admin.settings') and not request.endpoint.startswith('admin.settings_admins') }}" href="{{ url_for('admin.settings_general') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin.settings_general' or (request.endpoint and request.endpoint.startswith('admin.settings_') and request.endpoint not in ('admin.settings_admins','admin.settings_legal')) }}" href="{{ url_for('admin.settings_general') }}">
                         <i class="bi bi-gear-fill"></i> الإعدادات
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin.settings_legal' }}" href="{{ url_for('admin.settings_legal') }}">
+                        <i class="bi bi-file-earmark-text-fill"></i> الشروط والخصوصية
                     </a>
                 </li>
                 <li class="nav-item">

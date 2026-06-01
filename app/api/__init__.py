@@ -1,4 +1,4 @@
-"""LexOffice REST API v1 — Blueprint registration and error handlers."""
+"""المُستشار REST API v1 — Blueprint registration and error handlers."""
 from flask import Blueprint, jsonify
 from app.extensions import csrf
 

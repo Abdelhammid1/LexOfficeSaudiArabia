@@ -39,17 +39,16 @@
                             <textarea name="description" class="form-control" rows="2">{{ form.description or '' }}</textarea>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small fw-semibold">السوق *</label>
-                            <select name="market" class="form-select" required>
-                                <option value="eg" {{ 'selected' if (form.market or 'eg') == 'eg' }}>🇪🇬 مصر (EG)</option>
-                                <option value="sa" {{ 'selected' if form.market == 'sa' }}>🇸🇦 السعودية (SA)</option>
+                            <label class="form-label small fw-semibold">السوق</label>
+                            <select name="market" class="form-select" disabled>
+                                <option value="sa" selected>🇸🇦 المملكة العربية السعودية (SA)</option>
                             </select>
+                            <input type="hidden" name="market" value="sa">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">العملة *</label>
                             <select name="currency_code" class="form-select" required>
-                                <option value="EGP" {{ 'selected' if (form.currency_code or 'EGP') == 'EGP' }}>EGP — جنيه مصري</option>
-                                <option value="SAR" {{ 'selected' if form.currency_code == 'SAR' }}>SAR — ريال سعودي</option>
+                                <option value="SAR" {{ 'selected' if (form.currency_code or 'SAR') == 'SAR' }}>SAR — ريال سعودي</option>
                             </select>
                         </div>
                         <div class="col-md-4">

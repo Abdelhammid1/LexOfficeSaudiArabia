@@ -63,15 +63,6 @@
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div class="d-flex align-items-center gap-2 flex-wrap">
         <div class="btn-group btn-group-sm" role="group">
-            <a href="{{ url_for('admin.ai_usage_list', sort=sort) }}"
-               class="btn {{ 'btn-info' if not filter_market else 'btn-outline-info' }}">الكل</a>
-            <a href="{{ url_for('admin.ai_usage_list', market='eg', sort=sort) }}"
-               class="btn {{ 'btn-info' if filter_market == 'eg' else 'btn-outline-info' }}">🇪🇬 مصر</a>
-            <a href="{{ url_for('admin.ai_usage_list', market='sa', sort=sort) }}"
-               class="btn {{ 'btn-info' if filter_market == 'sa' else 'btn-outline-info' }}">🇸🇦 السعودية</a>
-        </div>
-
-        <div class="btn-group btn-group-sm" role="group">
             <a href="{{ url_for('admin.ai_usage_list', market=filter_market or None, sort=sort) }}"
                class="btn {{ 'btn-secondary' if not filter_kind else 'btn-outline-secondary' }}">الكل</a>
             <a href="{{ url_for('admin.ai_usage_list', filter='active', market=filter_market or None, sort=sort) }}"

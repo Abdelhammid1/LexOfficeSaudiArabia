@@ -138,10 +138,10 @@ def finance_loan_payments_create():
         log_finance_action(
             action_type='CREATE', entity_type='OpLoanPayment', entity_id=payment.id,
             new_value={'lender': lender.lender_name, 'amount': float(payment.amount), 'date': str(payment.payment_date)},
-            description=f'دفعة قرض: {lender.lender_name} — {payment.amount} ج.م',
+            description=f'دفعة قرض: {lender.lender_name} — {payment.amount} ر.س',
         )
         db.session.commit()
-        flash(f'تم تسجيل دفعة {payment.amount} ج.م لـ {lender.lender_name}', 'success')
+        flash(f'تم تسجيل دفعة {payment.amount} ر.س لـ {lender.lender_name}', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'تعذر تسجيل الدفعة: {e}', 'danger')
@@ -162,7 +162,7 @@ def finance_loan_payments_delete(payment_id):
         log_finance_action(
             action_type='DELETE', entity_type='OpLoanPayment', entity_id=payment.id,
             old_value={'lender': lender_name, 'amount': float(amount), 'date': str(payment.payment_date)},
-            description=f'حذف دفعة قرض: {lender_name} — {amount} ج.م',
+            description=f'حذف دفعة قرض: {lender_name} — {amount} ر.س',
         )
         db.session.delete(payment)
         db.session.commit()

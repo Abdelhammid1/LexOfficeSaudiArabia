@@ -9,7 +9,7 @@
         <input type="text" name="lender_name" class="form-control" required value="{{ lender.lender_name if lender else '' }}">
     </div>
     <div class="col-md-6">
-        <label class="form-label">المبلغ الأصلي (ج.م) <span class="text-danger">*</span></label>
+        <label class="form-label">المبلغ الأصلي (ر.س) <span class="text-danger">*</span></label>
         <input type="number" step="0.01" min="0" name="original_amount" class="form-control" required
                value="{{ lender.original_amount if lender else '' }}">
     </div>
@@ -61,7 +61,7 @@
                 {% for lender in lenders %}
                 <tr>
                     <td class="fw-bold" style="color: var(--accent)">{{ lender.lender_name }}</td>
-                    <td class="text-end fw-bold">{{ '{:,.0f}'.format(lender.original_amount) }} <small class="text-muted">ج.م</small></td>
+                    <td class="text-end fw-bold">{{ '{:,.0f}'.format(lender.original_amount) }} <small class="text-muted">ر.س</small></td>
                     <td>{{ lender.loan_date.strftime('%d/%m/%Y') }}</td>
                     <td class="text-end fw-bold text-success">{{ '{:,.0f}'.format(lender.total_paid) }}</td>
                     <td class="text-end fw-bold {{ 'text-warning' if lender.balance > 0 else 'text-success' }}">

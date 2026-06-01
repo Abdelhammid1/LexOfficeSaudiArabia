@@ -1,4 +1,4 @@
-"""Enums and constants for LexOffice."""
+"""Enums and constants for المُستشار."""
 import enum
 
 
@@ -32,8 +32,10 @@ class SubscriptionStatus(str, enum.Enum):
 
 class PaymentMethodSubscription(str, enum.Enum):
     CREDIT_CARD = 'credit_card'
-    VODAFONE_CASH = 'vodafone_cash'
-    ETISALAT_CASH = 'etisalat_cash'
+    MADA = 'mada'
+    STC_PAY = 'stc_pay'
+    APPLE_PAY = 'apple_pay'
+    BANK_TRANSFER = 'bank_transfer'
 
 
 class SubscriptionPaymentStatus(str, enum.Enum):
@@ -51,11 +53,12 @@ class ClientType(str, enum.Enum):
 
 
 class ClientDocType(str, enum.Enum):
-    NATIONAL_ID_FRONT = 'national_id_front'
-    NATIONAL_ID_BACK = 'national_id_back'
-    PASSPORT = 'passport'
-    COMMERCIAL_REG = 'commercial_reg'
-    TAX_CARD = 'tax_card'
+    NATIONAL_ID_FRONT = 'national_id_front'   # الهوية الوطنية (وجه أمامي)
+    NATIONAL_ID_BACK = 'national_id_back'     # الهوية الوطنية (وجه خلفي)
+    IQAMA = 'iqama'                           # الإقامة (للمقيمين)
+    PASSPORT = 'passport'                     # جواز السفر
+    COMMERCIAL_REG = 'commercial_reg'         # السجل التجاري
+    VAT_CERTIFICATE = 'vat_certificate'       # شهادة ضريبة القيمة المضافة
     OTHER = 'other'
 
 
@@ -106,23 +109,18 @@ class PaymentSchedule(str, enum.Enum):
     OPEN = 'open'                    # مفتوح
 
 
-# ── Court ──
+# ── Court ── (KSA judicial structure)
 class CourtType(str, enum.Enum):
-    # Shared
-    PRIMARY = 'primary'              # ابتدائي / عامة (KSA: General Courts)
-    APPEAL = 'appeal'                # استئنافي
-    CASSATION = 'cassation'          # نقض (EG)
-    CONSTITUTIONAL = 'constitutional'  # دستوري
-    ECONOMIC = 'economic'            # اقتصادي (EG)
-    FAMILY = 'family'                # أسرة / أحوال شخصية
-    MILITARY = 'military'            # عسكري
-    STATE_COUNCIL = 'state_council'  # مجلس الدولة (EG) / ديوان المظالم (KSA)
-    # KSA-specific additions
-    SUPREME = 'supreme'              # المحكمة العليا (KSA top tier)
+    SUPREME = 'supreme'              # المحكمة العليا
+    APPEAL = 'appeal'                # محكمة الاستئناف
+    PRIMARY = 'primary'              # المحكمة العامة
     CRIMINAL = 'criminal'            # المحاكم الجزائية
     COMMERCIAL = 'commercial'        # المحاكم التجارية
     LABOR = 'labor'                  # المحاكم العمالية
+    FAMILY = 'family'                # محاكم الأحوال الشخصية
     ENFORCEMENT = 'enforcement'      # محاكم التنفيذ
+    STATE_COUNCIL = 'state_council'  # ديوان المظالم (الإدارية)
+    MILITARY = 'military'            # المحاكم العسكرية
 
 
 # ── Session ──
@@ -144,12 +142,11 @@ class SessionResult(str, enum.Enum):
     ABSENCE = 'absence'              # غياب
 
 
-# ── Judgment ──
+# ── Judgment ── (KSA judicial system)
 class JudgmentType(str, enum.Enum):
     PRIMARY = 'primary'              # ابتدائي
     APPEAL = 'appeal'                # استئنافي
-    CASSATION = 'cassation'          # نقض
-    CONSTITUTIONAL = 'constitutional'  # دستوري
+    SUPREME = 'supreme'              # المحكمة العليا
 
 
 class JudgmentResult(str, enum.Enum):
@@ -163,7 +160,7 @@ class JudgmentResult(str, enum.Enum):
 
 class AppealType(str, enum.Enum):
     APPEAL = 'appeal'                # استئناف
-    CASSATION = 'cassation'          # نقض
+    CASSATION = 'cassation'          # نقض / التماس إعادة النظر
 
 
 # ── Enforcement ──
@@ -202,7 +199,9 @@ class PaymentMethod(str, enum.Enum):
     CASH = 'cash'                    # كاش
     BANK_TRANSFER = 'bank_transfer'  # تحويل بنكي
     CHECK = 'check'                  # شيك
-    VODAFONE_CASH = 'vodafone_cash'  # فودافون كاش
+    MADA = 'mada'                    # مدى
+    STC_PAY = 'stc_pay'              # STC Pay
+    APPLE_PAY = 'apple_pay'          # Apple Pay
     CARD = 'card'                    # بطاقة
 
 

@@ -13,19 +13,19 @@
     <div class="col-md-4">
         <div class="stat-card">
             <div class="label">إجمالي المستحق المتراكم</div>
-            <div class="value text-warning">{{ '{:,.0f}'.format(totals.due) }} <small style="font-size:1rem">ج.م</small></div>
+            <div class="value text-warning">{{ '{:,.0f}'.format(totals.due) }} <small style="font-size:1rem">ر.س</small></div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="stat-card">
             <div class="label">إجمالي المدفوع</div>
-            <div class="value text-success">{{ '{:,.0f}'.format(totals.paid) }} <small style="font-size:1rem">ج.م</small></div>
+            <div class="value text-success">{{ '{:,.0f}'.format(totals.paid) }} <small style="font-size:1rem">ر.س</small></div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="stat-card">
             <div class="label">الباقي الفعلي</div>
-            <div class="value text-danger">{{ '{:,.0f}'.format(totals.balance) }} <small style="font-size:1rem">ج.م</small></div>
+            <div class="value text-danger">{{ '{:,.0f}'.format(totals.balance) }} <small style="font-size:1rem">ر.س</small></div>
         </div>
     </div>
 </div>
@@ -81,9 +81,9 @@
             <tfoot class="fw-bold" style="background: rgba(7,143,210,0.06)">
                 <tr>
                     <td colspan="4" class="text-end">الإجمالي</td>
-                    <td class="text-end text-warning">{{ '{:,.0f}'.format(totals.due) }} ج.م</td>
-                    <td class="text-end text-success">{{ '{:,.0f}'.format(totals.paid) }} ج.م</td>
-                    <td class="text-end text-danger">{{ '{:,.0f}'.format(totals.balance) }} ج.م</td>
+                    <td class="text-end text-warning">{{ '{:,.0f}'.format(totals.due) }} ر.س</td>
+                    <td class="text-end text-success">{{ '{:,.0f}'.format(totals.paid) }} ر.س</td>
+                    <td class="text-end text-danger">{{ '{:,.0f}'.format(totals.balance) }} ر.س</td>
                     <td colspan="2"></td>
                 </tr>
             </tfoot>

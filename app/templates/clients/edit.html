@@ -33,8 +33,8 @@
                     <input type="text" name="full_name_en" class="form-control" dir="ltr" value="{{ client.full_name_en or '' }}">
                 </div>
                 <div class="col-md-4" id="nationalIdField">
-                    <label class="form-label">الرقم القومي</label>
-                    <input type="text" name="national_id" class="form-control" dir="ltr" maxlength="14" value="{{ client.national_id or '' }}">
+                    <label class="form-label">رقم الهوية</label>
+                    <input type="text" name="national_id" class="form-control" dir="ltr" maxlength="10" inputmode="numeric" pattern="[12]\d{9}" placeholder="1xxxxxxxxx / 2xxxxxxxxx" value="{{ client.national_id or '' }}">
                 </div>
                 <div class="col-md-4" id="commercialRegField" style="display:none;">
                     <label class="form-label">السجل التجاري</label>
@@ -62,7 +62,7 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">المحافظة</label>
+                    <label class="form-label">المنطقة</label>
                     <select name="governorate" class="form-select">
                         <option value="">-- اختر --</option>
                         {% for gov in governorates %}

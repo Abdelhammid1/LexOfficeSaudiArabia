@@ -9,12 +9,10 @@ from app.utils.validators import validate_national_id, validate_phone, validate_
 
 clients_bp = Blueprint('clients', __name__, template_folder='../../templates/clients')
 
-EGYPTIAN_GOVERNORATES = [
-    'القاهرة', 'الجيزة', 'الإسكندرية', 'الدقهلية', 'البحر الأحمر', 'البحيرة',
-    'الفيوم', 'الغربية', 'الإسماعيلية', 'المنوفية', 'المنيا', 'القليوبية',
-    'الوادي الجديد', 'السويس', 'أسوان', 'أسيوط', 'بني سويف', 'بورسعيد',
-    'دمياط', 'الشرقية', 'جنوب سيناء', 'كفر الشيخ', 'مطروح', 'الأقصر',
-    'قنا', 'شمال سيناء', 'سوهاج',
+SAUDI_REGIONS = [
+    'الرياض', 'مكة المكرمة', 'المدينة المنورة', 'القصيم', 'المنطقة الشرقية',
+    'عسير', 'تبوك', 'حائل', 'الحدود الشمالية', 'جازان',
+    'نجران', 'الباحة', 'الجوف',
 ]
 
 
@@ -145,7 +143,7 @@ def create():
 
         national_id = request.form.get('national_id', '').strip()
         if national_id and not validate_national_id(national_id):
-            errors.append('الرقم القومي يجب أن يكون 14 رقم')
+            errors.append('رقم الهوية يجب أن يكون 10 أرقام (يبدأ بـ 1 للسعوديين / 2 للمقيمين)')
 
         phone = request.form.get('phone_primary', '').strip()
         if phone and not validate_phone(phone):
@@ -159,7 +157,7 @@ def create():
             for err in errors:
                 flash(err, 'danger')
             return render_template('clients/create.html', form=request.form,
-                                   governorates=EGYPTIAN_GOVERNORATES)
+                                   governorates=SAUDI_REGIONS)
 
         client = Client(
             tenant_id=g.tenant_id,
@@ -206,7 +204,7 @@ def create():
         flash('تم إضافة الموكل بنجاح', 'success')
         return redirect(url_for('clients.show', id=client.id))
 
-    return render_template('clients/create.html', form={}, governorates=EGYPTIAN_GOVERNORATES)
+    return render_template('clients/create.html', form={}, governorates=SAUDI_REGIONS)
 
 
 @clients_bp.route('/<int:id>')
@@ -330,13 +328,13 @@ def edit(id):
 
         national_id = request.form.get('national_id', '').strip()
         if national_id and not validate_national_id(national_id):
-            errors.append('الرقم القومي يجب أن يكون 14 رقم')
+            errors.append('رقم الهوية يجب أن يكون 10 أرقام (يبدأ بـ 1 للسعوديين / 2 للمقيمين)')
 
         if errors:
             for err in errors:
                 flash(err, 'danger')
             return render_template('clients/edit.html', client=client,
-                                   governorates=EGYPTIAN_GOVERNORATES)
+                                   governorates=SAUDI_REGIONS)
 
         client.full_name = full_name
         client.full_name_en = request.form.get('full_name_en', '').strip() or None
@@ -365,7 +363,7 @@ def edit(id):
         flash('تم تحديث بيانات الموكل بنجاح', 'success')
         return redirect(url_for('clients.show', id=client.id))
 
-    return render_template('clients/edit.html', client=client, governorates=EGYPTIAN_GOVERNORATES)
+    return render_template('clients/edit.html', client=client, governorates=SAUDI_REGIONS)
 
 
 @clients_bp.route('/<int:id>/delete', methods=['POST'])

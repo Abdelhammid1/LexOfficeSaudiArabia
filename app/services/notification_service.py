@@ -95,7 +95,7 @@ def create_notification(
                 email_html = _build_notification_email(title, body, actor_name)
                 send_email(
                     to=user.email,
-                    subject=f'LexOffice: {title}',
+                    subject=f'المُستشار: {title}',
                     html_body=email_html,
                 )
         except Exception as e:
@@ -189,13 +189,13 @@ def _build_notification_email(title, body, actor_name=None):
     body_line = f'<p style="margin: 8px 0 0; color: #475569;">{body}</p>' if body else ''
     return f"""
     <div dir="rtl" style="font-family: Tajawal, Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #1849A9; margin-bottom: 16px;">LexOffice</h2>
+        <h2 style="color: #1849A9; margin-bottom: 16px;">المُستشار</h2>
         <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin: 16px 0; border-right: 4px solid #1849A9;">
             <h3 style="margin: 0; color: #1e293b; font-size: 16px;">{title}</h3>
             {body_line}
         </div>
         {actor_line}
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-        <p style="color: #94a3b8; font-size: 12px;">هذا إشعار تلقائي من نظام LexOffice لإدارة مكتب المحاماة.</p>
+        <p style="color: #94a3b8; font-size: 12px;">هذا إشعار تلقائي من نظام المُستشار لإدارة مكتب المحاماة.</p>
     </div>
     """

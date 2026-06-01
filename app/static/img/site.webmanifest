@@ -1,6 +1,6 @@
 {
-  "name": "LexOffice — منصة إدارة المكاتب القانونية",
-  "short_name": "LexOffice",
+  "name": "المُستشار — منصة إدارة المكاتب القانونية",
+  "short_name": "المُستشار",
   "icons": [
     {
       "src": "/static/img/web-app-manifest-192x192.png",

@@ -9,13 +9,10 @@ from flask import g, request
 from app.models.case import Court
 from app.models.user import Role, User
 
-EGYPTIAN_GOVERNORATES = [
-    'القاهرة', 'الجيزة', 'الإسكندرية', 'الدقهلية', 'البحر الأحمر',
-    'البحيرة', 'الفيوم', 'الغربية', 'الإسماعيلية', 'المنوفية',
-    'المنيا', 'القليوبية', 'الوادي الجديد', 'السويس', 'أسوان',
-    'أسيوط', 'بني سويف', 'بورسعيد', 'دمياط', 'الشرقية',
-    'جنوب سيناء', 'كفر الشيخ', 'مطروح', 'الأقصر', 'قنا',
-    'شمال سيناء', 'سوهاج',
+SAUDI_REGIONS = [
+    'الرياض', 'مكة المكرمة', 'المدينة المنورة', 'القصيم', 'المنطقة الشرقية',
+    'عسير', 'تبوك', 'حائل', 'الحدود الشمالية', 'جازان',
+    'نجران', 'الباحة', 'الجوف',
 ]
 
 
@@ -60,8 +57,16 @@ def api_lookups_users():
 @api_bp.route('/lookups/governorates', methods=['GET'])
 @api_login_required
 def api_lookups_governorates():
-    """Return the list of Egyptian governorates."""
-    return success_response(data=EGYPTIAN_GOVERNORATES)
+    """Return the list of Saudi regions (kept under /governorates for
+    mobile-app backwards compatibility — the value list is now KSA regions)."""
+    return success_response(data=SAUDI_REGIONS)
+
+
+@api_bp.route('/lookups/regions', methods=['GET'])
+@api_login_required
+def api_lookups_regions():
+    """Return the list of Saudi regions (المناطق)."""
+    return success_response(data=SAUDI_REGIONS)
 
 
 @api_bp.route('/lookups/enums', methods=['GET'])
@@ -111,7 +116,7 @@ def api_lookups_enums():
         # Judgments
         'judgment_types': to_enum_list([
             ('primary', 'ابتدائي'), ('appeal', 'استئنافي'),
-            ('cassation', 'نقض'), ('constitutional', 'دستوري'),
+            ('supreme', 'المحكمة العليا'),
         ]),
         'judgment_results': to_enum_list([
             ('full_win', 'كسب كامل'), ('partial_win', 'كسب جزئي'), ('loss', 'خسارة'),
@@ -130,8 +135,9 @@ def api_lookups_enums():
 
         # Financial
         'payment_methods': to_enum_list([
-            ('cash', 'نقدي'), ('bank_transfer', 'تحويل بنكي'), ('check', 'شيك'),
-            ('credit_card', 'بطاقة ائتمان'), ('online', 'دفع إلكتروني'),
+            ('cash', 'نقدي'), ('bank_transfer', 'تحويل بنكي'),
+            ('mada', 'مدى'), ('stc_pay', 'STC Pay'), ('apple_pay', 'Apple Pay'),
+            ('check', 'شيك'), ('credit_card', 'بطاقة ائتمان'),
         ]),
         'expense_types': to_enum_list([
             ('court_fees', 'رسوم محكمة'), ('registration', 'رسوم تسجيل'),

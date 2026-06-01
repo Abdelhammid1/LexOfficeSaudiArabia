@@ -7,7 +7,7 @@
 {% set status_class = {'new':'b-pen','active':'b-open','in_progress':'b-pen','awaiting_judgment':'b-pen','suspended':'b-hold','closed':'b-done'} %}
 {% set inv_status_map = {'draft':'مسودة','sent':'مرسلة','paid':'مسددة','overdue':'متأخرة','cancelled':'ملغاة'} %}
 {% set inv_status_class = {'draft':'b-draft','sent':'b-due','paid':'b-paid','overdue':'b-over','cancelled':'b-draft'} %}
-{% set _curr = market_config.currency_symbol_ar if market_config else 'ج.م' %}
+{% set _curr = market_config.currency_symbol_ar if market_config else 'ر.س' %}
 {% set _palette = ['#1849A9','#0F7A55','#7A5000','#9B2020','#7B3F9E','#078FD2'] %}
 
 {% block extra_css %}

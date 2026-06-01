@@ -372,7 +372,7 @@ def _maybe_send_warning_email(tenant: Tenant) -> None:
         f'<p>سيتم إيقاف استخدام الميزة تلقائياً عند الوصول إلى الحد الأقصى. '
         f'يمكنكم ترقية الخطة في أي وقت من إعدادات الاشتراك.</p>'
         f'<p>تتجدد الحصة تلقائياً في أول كل شهر ميلادي.</p>'
-        f'<hr><small>LexOffice — منظومة إدارة مكاتب المحاماة</small></div>'
+        f'<hr><small>المُستشار — منظومة إدارة مكاتب المحاماة</small></div>'
     )
     try:
         send_email(to=manager.email, subject=subject, html_body=body_html)

@@ -37,7 +37,7 @@ OUTPUT_FORMATS = [('html', 'HTML'), ('docx', 'Word')]
 # Available variables for auto-fill
 AVAILABLE_VARIABLES = {
     'client_name': 'اسم الموكل',
-    'client_national_id': 'الرقم القومي',
+    'client_national_id': 'رقم الهوية',
     'client_phone': 'هاتف الموكل',
     'client_address': 'عنوان الموكل',
     'case_number': 'رقم القضية',

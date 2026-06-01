@@ -13,7 +13,7 @@ class Court(db.Model):
     governorate = db.Column(db.String(100), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     # 'eg' | 'sa' — onboarding filters dropdown by tenant.market.
-    market = db.Column(db.String(2), nullable=False, default='eg', index=True)
+    market = db.Column(db.String(2), nullable=False, default='sa', index=True)
 
     def to_dict(self):
         return {

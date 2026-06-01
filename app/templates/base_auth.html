@@ -56,6 +56,14 @@
                     </div>
 
                     {% block footer %}{% endblock %}
+
+                    <div class="text-center mt-4 text-muted" style="font-size: 0.8rem;">
+                        <a href="{{ terms_url or url_for('public.terms') }}" target="_blank"
+                           class="text-decoration-none text-muted">الشروط والأحكام</a>
+                        <span class="mx-2">·</span>
+                        <a href="{{ privacy_url or url_for('public.privacy') }}" target="_blank"
+                           class="text-decoration-none text-muted">سياسة الخصوصية</a>
+                    </div>
                 </div>
             </div>
         </div>

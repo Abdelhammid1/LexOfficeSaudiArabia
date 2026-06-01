@@ -13,10 +13,10 @@ from app.utils.helpers import save_uploaded_file
 # Default keys we expose in the UI. `help_center_url` removed per
 # requirements doc — replaced by the existing contact page.
 GENERAL_KEYS = [
-    ('product_name',     'اسم المنتج',                'LexOffice'),
-    ('product_logo_url', 'رابط شعار المنتج',          ''),
+    ('product_name',     'اسم المنتج',                'المُستشار'),
+    ('product_logo_url', 'رابط شعار المنتج',          '/static/img/logo.svg'),
     ('support_email',    'بريد الدعم الفني',          'support@manasety.ai'),
-    ('default_currency', 'العملة الافتراضية',         'EGP'),
+    ('default_currency', 'العملة الافتراضية',         'SAR'),
     ('terms_url',        'رابط شروط الخدمة',          ''),
     ('privacy_url',      'رابط سياسة الخصوصية',       ''),
 ]
@@ -111,7 +111,7 @@ def settings_smtp():
 def settings_smtp_test():
     """Send a test email to verify SMTP works."""
     test_email = (request.form.get('test_email') or g.current_admin.email).strip()
-    subject = 'LexOffice — Test Email'
+    subject = 'المُستشار — Test Email'
     html = f"""
     <div dir='rtl' style='font-family:Tajawal,Arial;padding:20px'>
         <h2 style='color:#1849A9'>✓ تم إرسال البريد بنجاح</h2>

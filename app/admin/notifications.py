@@ -172,7 +172,7 @@ def _deliver_to_tenant(tenant, title, body, priority, channels):
         # Email
         if 'email' in channels and u.email:
             from app.models.admin import SystemSetting
-            product_name = SystemSetting.get('product_name', 'LexOffice') or 'LexOffice'
+            product_name = SystemSetting.get('product_name', 'المُستشار') or 'المُستشار'
             html = f"""
             <div dir='rtl' style='font-family:Tajawal,Arial;padding:24px;max-width:600px;margin:auto'>
                 <h2 style='color:#1849A9'>{title}</h2>

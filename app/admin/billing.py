@@ -254,7 +254,7 @@ def billing_invoice_refund(invoice_id):
         description=f'Refunded {refund_amount} from invoice {inv.invoice_number}',
     )
     db.session.commit()
-    flash(f'تم استرداد المبلغ: {refund_amount} ج.م', 'warning')
+    flash(f'تم استرداد المبلغ: {refund_amount} ر.س', 'warning')
     return redirect(url_for('admin.billing_invoice_detail', invoice_id=invoice_id))
 
 
@@ -283,7 +283,7 @@ def billing_invoice_mark_partial(invoice_id):
         description=f'Partial payment {paid_amount} of {total} on {inv.invoice_number}',
     )
     db.session.commit()
-    flash(f'تم تسجيل دفعة جزئية: {paid_amount} ج.م من {total}', 'success')
+    flash(f'تم تسجيل دفعة جزئية: {paid_amount} ر.س من {total}', 'success')
     return redirect(url_for('admin.billing_invoice_detail', invoice_id=invoice_id))
 
 
@@ -364,7 +364,7 @@ def billing_invoice_remind(invoice_id):
         return redirect(url_for('admin.billing_invoice_detail', invoice_id=invoice_id))
 
     from app.models.admin import SystemSetting
-    product_name = SystemSetting.get('product_name', 'LexOffice') or 'LexOffice'
+    product_name = SystemSetting.get('product_name', 'المُستشار') or 'المُستشار'
     subject = f'تذكير بفاتورة معلقة — {inv.invoice_number}'
     html = f"""
     <div dir='rtl' style='font-family: Tajawal, Arial; padding:24px'>
@@ -372,7 +372,7 @@ def billing_invoice_remind(invoice_id):
       <p>عزيزي {tenant.name},</p>
       <p>هذه رسالة تذكير بشأن الفاتورة رقم <strong>{inv.invoice_number}</strong>:</p>
       <ul>
-        <li>المبلغ: <strong>{inv.amount} ج.م</strong></li>
+        <li>المبلغ: <strong>{inv.amount} ر.س</strong></li>
         <li>تاريخ الإصدار: {inv.issue_date or inv.created_at.date()}</li>
         <li>تاريخ الاستحقاق: {inv.due_date or '—'}</li>
         <li>الحالة: {inv.status}</li>

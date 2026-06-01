@@ -35,8 +35,7 @@
                     <label class="form-label small fw-semibold">{{ label }}</label>
                     {% if key == 'default_currency' %}
                     <select name="{{ key }}" class="form-select">
-                        <option value="EGP" {{ 'selected' if values[key] == 'EGP' }}>جنيه مصري (EGP)</option>
-                        <option value="SAR" {{ 'selected' if values[key] == 'SAR' }}>ريال سعودي (SAR)</option>
+                        <option value="SAR" {{ 'selected' if values[key] in ('', 'SAR') }}>ريال سعودي (SAR)</option>
                         <option value="USD" {{ 'selected' if values[key] == 'USD' }}>دولار أمريكي (USD)</option>
                     </select>
                     {% elif key == 'product_logo_url' %}
@@ -66,6 +65,15 @@
                 <i class="bi bi-envelope-at" style="font-size:2rem; color: var(--accent)"></i>
                 <h6 class="mt-3 mb-1">إعدادات البريد (SMTP)</h6>
                 <small class="text-muted">تكوين خادم البريد للإشعارات</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ url_for('admin.settings_legal') }}" class="card text-decoration-none h-100" style="color: var(--dark-text)">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-file-earmark-text" style="font-size:2rem; color: var(--accent)"></i>
+                <h6 class="mt-3 mb-1">الشروط والخصوصية</h6>
+                <small class="text-muted">تحرير محتوى صفحتي /terms و /privacy</small>
             </div>
         </a>
     </div>

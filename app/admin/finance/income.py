@@ -46,10 +46,10 @@ def finance_income_create():
         log_finance_action(
             action_type='CREATE', entity_type='OpIncome', entity_id=income.id,
             new_value={'source': income.source_label, 'amount': float(income.amount), 'date': str(income.income_date)},
-            description=f'إيراد: {income.source_label} — {income.amount} ج.م',
+            description=f'إيراد: {income.source_label} — {income.amount} ر.س',
         )
         db.session.commit()
-        flash(f'تم تسجيل إيراد {income.amount} ج.م من {income.source_label}', 'success')
+        flash(f'تم تسجيل إيراد {income.amount} ر.س من {income.source_label}', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'تعذر التسجيل: {e}', 'danger')
@@ -66,7 +66,7 @@ def finance_income_delete(income_id):
         log_finance_action(
             action_type='DELETE', entity_type='OpIncome', entity_id=income.id,
             old_value={'source': label, 'amount': float(amount), 'date': str(income.income_date)},
-            description=f'حذف إيراد: {label} — {amount} ج.م',
+            description=f'حذف إيراد: {label} — {amount} ر.س',
         )
         db.session.delete(income)
         db.session.commit()

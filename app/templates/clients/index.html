@@ -2,7 +2,7 @@
 {% block title %}الموكلون - {{ product_name }}{% endblock %}
 
 {% set type_map = {'individual':'فرد','company':'شركة','government':'جهة حكومية'} %}
-{% set _curr = market_config.currency_symbol_ar if market_config else 'ج.م' %}
+{% set _curr = market_config.currency_symbol_ar if market_config else 'ر.س' %}
 {% set _palette = ['#1849A9','#0F7A55','#7A5000','#9B2020','#7B3F9E','#078FD2','#3B5A8A','#6B3FA0'] %}
 
 {% block extra_css %}
@@ -114,7 +114,7 @@
     <form method="GET" class="filter-row">
       <label class="search-input">
         <i class="bi bi-search"></i>
-        <input type="text" name="search" placeholder="بحث بالاسم أو الرقم القومي أو السجل…" value="{{ search }}">
+        <input type="text" name="search" placeholder="بحث بالاسم أو رقم الهوية أو السجل…" value="{{ search }}">
       </label>
 
       {# Type chips #}
