@@ -4,11 +4,30 @@ from flask_mail import Message
 from app.extensions import mail
 
 
+def _branded_sender():
+    """Return (product_name, email) so the inbox shows the product brand
+    instead of the bare address. Reads product_name live from SystemSetting
+    so admin edits take effect without restarting.
+    """
+    fallback = current_app.config.get('MAIL_DEFAULT_SENDER') or 'no-reply@manasety.ai'
+    if isinstance(fallback, tuple):
+        display, addr = fallback
+    else:
+        display, addr = None, fallback
+    try:
+        from app.models.admin import SystemSetting
+        name = SystemSetting.get('product_name', '') or display or 'المُستشار'
+    except Exception:
+        name = display or 'المُستشار'
+    return (name, addr)
+
+
 def send_email(to, subject, html_body, text_body=None):
     """Send an email. Silently fails in development if mail not configured."""
     try:
         msg = Message(
             subject=subject,
+            sender=_branded_sender(),
             recipients=[to] if isinstance(to, str) else to,
             html=html_body,
             body=text_body or '',

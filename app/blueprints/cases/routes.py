@@ -300,7 +300,21 @@ def close(id):
 def delete(id):
     """Delete a case (manager only via RBAC)."""
     case = Case.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
+    case_number = case.case_number
     db.session.delete(case)
     db.session.commit()
+
+    from app.services.notification_service import notify_tenant_users
+    notify_tenant_users(
+        tenant_id=g.tenant_id,
+        notification_type='general',
+        title=f'تم حذف قضية: {case_number}',
+        related_type='case',
+        related_id=id,
+        actor_name=g.current_user.full_name,
+        exclude_user_id=g.current_user.id,
+    )
+    db.session.commit()
+
     flash('تم حذف القضية', 'warning')
     return redirect(url_for('cases.index'))

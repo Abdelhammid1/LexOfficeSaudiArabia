@@ -210,6 +210,7 @@ def shared_view(token):
 def delete(id):
     """Delete a document."""
     document = Document.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
+    doc_name = document.name
     # Try to delete the file
     if document.file_path:
         if os.path.isabs(document.file_path):
@@ -223,5 +224,18 @@ def delete(id):
                 pass
     db.session.delete(document)
     db.session.commit()
+
+    from app.services.notification_service import notify_tenant_users
+    notify_tenant_users(
+        tenant_id=g.tenant_id,
+        notification_type='general',
+        title=f'تم حذف مستند: {doc_name}',
+        related_type='document',
+        related_id=id,
+        actor_name=g.current_user.full_name,
+        exclude_user_id=g.current_user.id,
+    )
+    db.session.commit()
+
     flash('تم حذف المستند', 'warning')
     return redirect(url_for('documents.index'))

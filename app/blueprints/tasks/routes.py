@@ -199,7 +199,21 @@ def update_status(id):
 def delete(id):
     """Delete a task."""
     task = Task.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
+    task_title = task.title
     db.session.delete(task)
     db.session.commit()
+
+    from app.services.notification_service import notify_tenant_users
+    notify_tenant_users(
+        tenant_id=g.tenant_id,
+        notification_type='general',
+        title=f'تم حذف مهمة: {task_title}',
+        related_type='task',
+        related_id=id,
+        actor_name=g.current_user.full_name,
+        exclude_user_id=g.current_user.id,
+    )
+    db.session.commit()
+
     flash('تم حذف المهمة', 'warning')
     return redirect(url_for('tasks.index'))

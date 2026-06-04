@@ -181,7 +181,21 @@ def delete(id):
     """Delete an enforcement record."""
     enforcement = Enforcement.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
     case_id = enforcement.case_id
+    case_number = enforcement.case.case_number if enforcement.case else ''
     db.session.delete(enforcement)
     db.session.commit()
+
+    from app.services.notification_service import notify_tenant_users
+    notify_tenant_users(
+        tenant_id=g.tenant_id,
+        notification_type='general',
+        title=f'تم حذف ملف تنفيذ — قضية {case_number}'.strip(),
+        related_type='case',
+        related_id=case_id,
+        actor_name=g.current_user.full_name,
+        exclude_user_id=g.current_user.id,
+    )
+    db.session.commit()
+
     flash('تم حذف ملف التنفيذ', 'warning')
     return redirect(url_for('cases.show', id=case_id))

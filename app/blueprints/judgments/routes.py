@@ -334,7 +334,21 @@ def delete(id):
     """Delete a judgment."""
     judgment = Judgment.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
     case_id = judgment.case_id
+    case_number = judgment.case.case_number if judgment.case else ''
     db.session.delete(judgment)
     db.session.commit()
+
+    from app.services.notification_service import notify_tenant_users
+    notify_tenant_users(
+        tenant_id=g.tenant_id,
+        notification_type='general',
+        title=f'تم حذف حكم — قضية {case_number}'.strip(),
+        related_type='case',
+        related_id=case_id,
+        actor_name=g.current_user.full_name,
+        exclude_user_id=g.current_user.id,
+    )
+    db.session.commit()
+
     flash('تم حذف الحكم', 'warning')
     return redirect(url_for('cases.show', id=case_id))

@@ -53,6 +53,37 @@ def create_app(config_name=None):
             return jsonify({'success': False, 'error': 'invalid_token', 'message': 'رمز غير صالح'}), 401
         return redirect(url_for('auth.login'))
 
+    # Sliding session: refresh the access cookie on activity so users aren't
+    # kicked out mid-task. Re-issues when remaining lifetime drops below half.
+    @app.after_request
+    def _refresh_access_cookie(response):
+        try:
+            from flask_jwt_extended import (
+                verify_jwt_in_request, get_jwt, get_jwt_identity,
+                create_access_token, set_access_cookies,
+            )
+            if request.path.startswith('/static/'):
+                return response
+            verify_jwt_in_request(optional=True)
+            identity = get_jwt_identity()
+            if not identity:
+                return response
+            claims = get_jwt() or {}
+            exp = claims.get('exp')
+            iat = claims.get('iat')
+            if not exp or not iat:
+                return response
+            lifetime = exp - iat
+            from datetime import datetime, timezone
+            now_ts = int(datetime.now(timezone.utc).timestamp())
+            remaining = exp - now_ts
+            if remaining > 0 and remaining < lifetime / 2:
+                new_token = create_access_token(identity=str(identity))
+                set_access_cookies(response, new_token)
+        except Exception:
+            pass
+        return response
+
     # Register blueprints
     _register_blueprints(app)
 

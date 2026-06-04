@@ -130,8 +130,9 @@ def notify_tenant_users(tenant_id, notification_type, title, body=None,
     for user in users:
         is_actor = exclude_user_id and user.id == exclude_user_id
         if is_actor:
-            # Actor: in-app only, no email/push to self
-            n = _create_in_app_only(
+            # Actor still gets in-app + email confirmation of their own action
+            # (matches the EG product behaviour) but no FCM push to self.
+            n = _create_in_app_and_email(
                 tenant_id=tenant_id,
                 user_id=user.id,
                 notification_type=notification_type,
@@ -140,8 +141,8 @@ def notify_tenant_users(tenant_id, notification_type, title, body=None,
                 priority=priority,
                 related_type=related_type,
                 related_id=related_id,
+                actor_name=actor_name,
             )
-            # Skip push to actor
         else:
             n = create_notification(
                 tenant_id=tenant_id,
@@ -181,6 +182,41 @@ def _create_in_app_only(tenant_id, user_id, notification_type, title,
     except Exception as e:
         current_app.logger.error(f'In-app notification failed: {e}')
         return None
+
+
+def _create_in_app_and_email(tenant_id, user_id, notification_type, title,
+                             body=None, priority='info', related_type=None,
+                             related_id=None, actor_name=None):
+    """In-app + email confirmation for the actor of an action.
+
+    Skips FCM push so the actor's device doesn't buzz for their own action.
+    """
+    notification = _create_in_app_only(
+        tenant_id=tenant_id, user_id=user_id,
+        notification_type=notification_type,
+        title=title, body=body, priority=priority,
+        related_type=related_type, related_id=related_id,
+    )
+    try:
+        setting = NotificationSetting.query.filter_by(
+            user_id=user_id, notification_type=notification_type,
+        ).first()
+        email_enabled = setting.email_enabled if setting else True
+    except Exception:
+        email_enabled = True
+    if email_enabled:
+        try:
+            user = User.query.get(user_id)
+            if user and user.email:
+                email_html = _build_notification_email(title, body, actor_name)
+                send_email(
+                    to=user.email,
+                    subject=f'المُستشار: {title}',
+                    html_body=email_html,
+                )
+        except Exception as e:
+            current_app.logger.error(f'Actor confirmation email failed: {e}')
+    return notification
 
 
 def _build_notification_email(title, body, actor_name=None):
