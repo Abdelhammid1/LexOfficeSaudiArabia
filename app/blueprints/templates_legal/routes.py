@@ -52,11 +52,22 @@ AVAILABLE_VARIABLES = {
 }
 
 
+_CASE_TYPE_AR = {
+    'criminal': 'جنائية', 'civil': 'مدنية', 'commercial': 'تجارية',
+    'administrative': 'إدارية', 'labor': 'عمالية', 'family': 'أسرة',
+    'real_estate': 'عقارية', 'intellectual_property': 'حقوق فكرية',
+    'constitutional': 'دستورية', 'enforcement': 'تنفيذ',
+}
+
+
 def substitute_variables(content, case=None, client=None, tenant=None):
     """Replace {{variable}} placeholders with actual values."""
     from datetime import date
+    from app.utils.hijri import hijri_str
+    today = date.today()
     replacements = {
-        'today_date': date.today().strftime('%Y-%m-%d'),
+        'today_date': today.strftime('%Y-%m-%d'),
+        'today_hijri': hijri_str(today),
         'office_name': tenant.name if tenant else '',
     }
 
@@ -69,7 +80,7 @@ def substitute_variables(content, case=None, client=None, tenant=None):
     if case:
         replacements['case_number'] = case.case_number or ''
         replacements['case_subject'] = case.subject or ''
-        replacements['case_type'] = case.case_type or ''
+        replacements['case_type'] = _CASE_TYPE_AR.get(case.case_type, case.case_type or '')
         replacements['opponent_name'] = case.opponent_name or ''
         if case.court:
             replacements['court_name'] = case.court.name

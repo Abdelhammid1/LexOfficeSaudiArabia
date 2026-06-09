@@ -48,6 +48,18 @@
                             {% else %}-{% endif %}
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <small class="text-muted">الفاتورة المرتبطة</small>
+                        <div>
+                            {% if payment.invoice %}
+                            <a href="{{ url_for('financial.show_invoice', id=payment.invoice_id) }}">
+                                <i class="bi bi-receipt me-1"></i>{{ payment.invoice.invoice_number }}
+                            </a>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% if payment.reference_number %}
                     <div class="col-md-6">
                         <small class="text-muted">رقم المرجع</small>

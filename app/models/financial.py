@@ -10,6 +10,10 @@ class Payment(db.Model, EncryptedFieldsMixin):
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
     case_id = db.Column(db.Integer, db.ForeignKey('cases.id'), nullable=True)
+    # Invoice this payment was applied to. Auto-created with status='paid'
+    # for ad-hoc payments; manually set when the payment satisfies a
+    # pre-existing sent/draft invoice. Nullable for legacy rows.
+    invoice_id = db.Column(db.Integer, db.ForeignKey('invoices.id'), nullable=True, index=True)
     amount = db.Column(db.Numeric(12, 2), nullable=False)
     payment_date = db.Column(db.Date, nullable=False)
     payment_method = db.Column(db.String(30), nullable=False)
@@ -21,6 +25,7 @@ class Payment(db.Model, EncryptedFieldsMixin):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     recorder = db.relationship('User')
+    invoice = db.relationship('Invoice', backref=db.backref('payments', lazy='dynamic'))
 
     @property
     def notes(self):
@@ -38,6 +43,8 @@ class Payment(db.Model, EncryptedFieldsMixin):
             'client_name': self.client.full_name if self.client else None,
             'case_id': self.case_id,
             'case_number': self.case.case_number if self.case else None,
+            'invoice_id': self.invoice_id,
+            'invoice_number': self.invoice.invoice_number if self.invoice else None,
             'amount': float(self.amount) if self.amount is not None else None,
             'payment_date': self.payment_date.isoformat() if self.payment_date else None,
             'payment_method': self.payment_method,

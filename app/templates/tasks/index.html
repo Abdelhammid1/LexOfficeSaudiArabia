@@ -75,6 +75,7 @@
                         <td>
                             {% if t.deadline %}
                             <small class="{% if overdue %}text-danger fw-bold{% endif %}">{{ t.deadline.strftime('%Y-%m-%d %H:%M') }}</small>
+                            <div class="text-muted" style="font-size:0.72rem">{{ t.deadline|hijri }}</div>
                             {% else %}-{% endif %}
                         </td>
                         <td><span class="badge bg-{{ status_color.get(t.status, 'secondary') }}">{{ status_map_local.get(t.status, t.status) }}</span></td>

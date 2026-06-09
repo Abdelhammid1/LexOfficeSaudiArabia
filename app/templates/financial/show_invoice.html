@@ -136,23 +136,101 @@
             </div>
         </div>
 
-        <!-- Payment Info -->
+        {# Status panel — case-level rollup when this invoice is attached
+           to a case with an agreed fee; invoice-level otherwise. #}
         <div class="card mb-3">
-            <div class="card-header">حالة السداد</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>{% if case_summary %}حالة السداد (على مستوى القضية){% else %}حالة السداد{% endif %}</span>
+                <a href="{{ url_for('financial.create_payment', client_id=invoice.client_id, case_id=invoice.case_id) }}"
+                   class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-plus-lg"></i> دفعة
+                </a>
+            </div>
             <div class="card-body text-center">
-                {% set pct = (paid_amount / (invoice.total|float) * 100) if invoice.total and (invoice.total|float) > 0 else 0 %}
-                <div class="display-6 {% if pct >= 100 %}text-success{% elif pct > 0 %}text-warning{% else %}text-muted{% endif %}">
-                    {{ '%.0f'|format(pct) }}%
-                </div>
-                <div class="progress my-2" style="height: 8px;">
-                    <div class="progress-bar bg-{{ 'success' if pct >= 100 else 'warning' }}" style="width: {{ [pct, 100]|min }}%"></div>
-                </div>
-                <div class="d-flex justify-content-between small">
-                    <span>المدفوع: <strong dir="ltr">{{ '{:,.0f}'.format(paid_amount) }}</strong></span>
-                    <span>المتبقي: <strong class="text-danger" dir="ltr">{{ '{:,.0f}'.format((invoice.total|float) - paid_amount) }}</strong></span>
-                </div>
+                {% if case_summary %}
+                    {% set pct = case_summary.pct %}
+                    {% set fully_paid = case_summary.fully_paid %}
+                    {% set credit = case_summary.credit %}
+                    <div class="display-6 {% if fully_paid %}text-success{% elif pct > 0 %}text-warning{% else %}text-muted{% endif %}">
+                        {% if fully_paid %}مكتملة ✓{% else %}{{ pct }}%{% endif %}
+                    </div>
+                    <div class="progress my-2" style="height: 8px;">
+                        <div class="progress-bar bg-{{ 'success' if fully_paid else 'warning' }}" style="width: {{ pct }}%"></div>
+                    </div>
+                    <div class="row text-center small mt-3 g-2">
+                        <div class="col-4">
+                            <div class="text-muted" style="font-size:0.7rem">إجمالي الأتعاب</div>
+                            <strong dir="ltr">{{ '{:,.0f}'.format(case_summary.fee_amount) }}</strong>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted" style="font-size:0.7rem">المدفوع</div>
+                            <strong class="text-success" dir="ltr">{{ '{:,.0f}'.format(case_summary.total_paid) }}</strong>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted" style="font-size:0.7rem">المتبقي</div>
+                            <strong class="{% if case_summary.remaining > 0 %}text-danger{% else %}text-success{% endif %}" dir="ltr">{{ '{:,.0f}'.format(case_summary.remaining) }}</strong>
+                        </div>
+                    </div>
+                    {% if credit > 0 %}
+                    <div class="alert alert-info mt-3 mb-0 py-2 small">
+                        <i class="bi bi-info-circle"></i>
+                        رصيد دائن: <strong dir="ltr">{{ '{:,.0f}'.format(credit) }}</strong> ر.س
+                    </div>
+                    {% endif %}
+                {% else %}
+                    {# Ad-hoc invoice (no case or no agreed fee) — invoice-level view #}
+                    <div class="display-6 {% if inv_pct >= 100 %}text-success{% elif inv_pct > 0 %}text-warning{% else %}text-muted{% endif %}">
+                        {% if inv_paid >= (invoice.total|float) and (invoice.total|float) > 0 %}مكتملة ✓{% else %}{{ inv_pct }}%{% endif %}
+                    </div>
+                    <div class="progress my-2" style="height: 8px;">
+                        <div class="progress-bar bg-{{ 'success' if inv_pct >= 100 else 'warning' }}" style="width: {{ inv_pct }}%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span>المدفوع: <strong dir="ltr">{{ '{:,.0f}'.format(inv_paid) }}</strong></span>
+                        <span>المتبقي: <strong class="text-danger" dir="ltr">{{ '{:,.0f}'.format(inv_remaining) }}</strong></span>
+                    </div>
+                    {% if inv_credit > 0 %}
+                    <div class="alert alert-info mt-3 mb-0 py-2 small">
+                        <i class="bi bi-info-circle"></i>
+                        رصيد دائن: <strong dir="ltr">{{ '{:,.0f}'.format(inv_credit) }}</strong> ر.س
+                    </div>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
+
+        {# Payments list — when case-linked, show ALL case payments (not just
+           the ones tied to this invoice) so the user sees the full picture.
+           Mark which payments are tied to this specific invoice. #}
+        {% set _shown_payments = case_summary.payments if case_summary else linked_payments %}
+        {% if _shown_payments %}
+        <div class="card mb-3">
+            <div class="card-header">
+                {% if case_summary %}جميع الدفعات على القضية ({{ _shown_payments|length }}){% else %}الدفعات المرتبطة ({{ _shown_payments|length }}){% endif %}
+            </div>
+            <div class="list-group list-group-flush">
+                {% for p in _shown_payments %}
+                <a href="{{ url_for('financial.show_payment', id=p.id) }}" class="list-group-item list-group-item-action d-flex justify-content-between">
+                    <div>
+                        <div class="fw-bold" dir="ltr">
+                            {{ '{:,.2f}'.format(p.amount) }} ر.س
+                            {% if case_summary and p.invoice_id == invoice.id %}
+                            <span class="badge bg-primary" style="font-size:0.65rem">هذه الفاتورة</span>
+                            {% elif case_summary and p.invoice %}
+                            <span class="badge bg-secondary" style="font-size:0.65rem">{{ p.invoice.invoice_number }}</span>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">
+                            {{ p.payment_date.strftime('%Y-%m-%d') }} ·
+                            {{ method_map.get(p.payment_method, p.payment_method) }}
+                        </small>
+                    </div>
+                    <i class="bi bi-chevron-left text-muted"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Metadata -->
         <div class="card">

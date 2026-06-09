@@ -28,8 +28,14 @@
 
     <div class="mb-3">
         <label for="password" class="form-label">كلمة المرور</label>
-        <input type="password" class="form-control" id="password" name="password"
-               required placeholder="8 أحرف على الأقل" dir="ltr">
+        <div class="input-group password-group">
+            <input type="password" class="form-control" id="password" name="password"
+                   required placeholder="8 أحرف على الأقل" dir="ltr">
+            <button class="btn btn-outline-secondary password-toggle" type="button"
+                    data-target="password" aria-label="إظهار/إخفاء كلمة المرور">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
         <div class="form-text">حرف كبير + رقم + رمز خاص</div>
     </div>
 

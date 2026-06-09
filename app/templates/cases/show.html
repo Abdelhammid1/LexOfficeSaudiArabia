@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %}قضية {{ case.case_number or '' }} - {{ product_name }}{% endblock %}
 
-{% set type_map = {'criminal':'جنائية','civil':'مدنية','commercial':'تجارية','administrative':'إدارية','labor':'عمالية','family':'أسرة','constitutional':'دستورية','enforcement':'تنفيذ'} %}
+{% set type_map = {'criminal':'جنائية','civil':'مدنية','commercial':'تجارية','administrative':'إدارية','labor':'عمالية','family':'أسرة','real_estate':'عقارية','intellectual_property':'حقوق فكرية','constitutional':'دستورية','enforcement':'تنفيذ'} %}
 {% set status_map = {'new':'جديدة','active':'نشطة','awaiting_judgment':'منتظرة حكم','suspended':'موقوفة','closed':'مغلقة'} %}
 {% set status_class = {'new':'b-new','active':'b-open','awaiting_judgment':'b-watch','suspended':'b-hold','closed':'b-done'} %}
-{% set cap_map = {'plaintiff':'مدعي','defendant':'مدعى عليه','appellant':'مستأنف','respondent':'مطعون ضده','other':'أخرى'} %}
+{% set cap_map = {'plaintiff':'مدعي','defendant':'مدعى عليه','accused':'متهم','victim':'مجني عليه','appellant':'مستأنف','respondent':'مطعون ضده','other':'أخرى'} %}
 {% set fee_map = {'fixed':'مبلغ ثابت','percentage':'نسبة','hourly':'بالساعة','mixed':'مختلط'} %}
 {% set _curr = market_config.currency_symbol_ar if market_config else 'ر.س' %}
 
@@ -221,7 +221,7 @@
                 <div class="case-meta-row">
                   <div class="case-meta-item">
                     <i class="bi bi-calendar3"></i>
-                    {% if case.created_at %}مفتوحة منذ {{ case.created_at.strftime('%Y-%m-%d') }}{% else %}—{% endif %}
+                    {% if case.created_at %}مفتوحة منذ {{ case.created_at.strftime('%Y-%m-%d') }} ({{ case.created_at|hijri }}){% else %}—{% endif %}
                   </div>
                   {% if case.court %}
                   <div class="case-meta-item">
@@ -317,7 +317,7 @@
                     {% else %}{{ ev.what }}{% endif %}
                   </div>
                   <div class="tl-who">
-                    {% if ev.date %}{{ ev.date.strftime('%Y-%m-%d') }}{% if ev.time %} · {{ ev.time.strftime('%I:%M') }}{% endif %}{% endif %}
+                    {% if ev.date %}{{ ev.date.strftime('%Y-%m-%d') }} · {{ ev.date|hijri }}{% if ev.time %} · {{ ev.time.strftime('%I:%M') }}{% endif %}{% endif %}
                     {% if ev.who %} · {{ ev.who }}{% endif %}
                   </div>
                 </div>
@@ -380,7 +380,7 @@
           </div>
           <div style="padding:12px 14px">
             <div class="next-time">
-              {{ next_session.session_date.strftime('%Y-%m-%d') }}
+              {{ next_session.session_date.strftime('%Y-%m-%d') }} · {{ next_session.session_date|hijri }}
               {% if next_session.session_time %} · {{ next_session.session_time.strftime('%I:%M') }} {% if next_session.session_time.hour < 12 %}ص{% else %}م{% endif %}{% endif %}
             </div>
             <div class="next-meta">

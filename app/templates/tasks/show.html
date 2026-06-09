@@ -50,6 +50,7 @@
                             {{ task.deadline.strftime('%Y-%m-%d %H:%M') }}
                             {% if task.is_overdue %}<span class="badge bg-danger">متأخرة</span>{% endif %}
                         </div>
+                        <small class="text-muted">{{ task.deadline|hijri }}</small>
                     </div>
                     {% endif %}
                 </div>

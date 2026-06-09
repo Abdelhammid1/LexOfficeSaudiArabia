@@ -39,8 +39,19 @@
             <!-- Brand -->
             <div class="sidebar-brand flex-shrink-0">
                 {% if current_user and current_user.tenant %}
+                    {% if current_user.tenant.logo_path %}
+                    <div class="brand-logo">
+                        <img src="{{ url_for('static', filename=current_user.tenant.logo_path) }}"
+                             alt="{{ current_user.tenant.name }}" loading="lazy">
+                    </div>
+                    {% else %}
+                    <div class="brand-logo brand-logo-placeholder">
+                        <span>{{ current_user.tenant.name[0] }}</span>
+                    </div>
+                    {% endif %}
                     <div class="brand-text">
                         <h6 class="brand-name">{{ current_user.tenant.name }}</h6>
+                        <small class="brand-sub">{{ product_name }}</small>
                     </div>
                 {% else %}
                     {% if product_logo %}
@@ -202,6 +213,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
     <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/hijri.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
     <!-- ── Support hint label (sits above the Chatwoot launcher) ───── -->

@@ -17,7 +17,13 @@
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">كلمة المرور</label>
-        <input type="password" class="form-control" id="password" name="password" required dir="ltr">
+        <div class="input-group password-group">
+            <input type="password" class="form-control" id="password" name="password" required dir="ltr">
+            <button class="btn btn-outline-secondary password-toggle" type="button"
+                    data-target="password" aria-label="إظهار/إخفاء كلمة المرور">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
         <div class="form-text">8 أحرف على الأقل، حرف كبير + رقم + رمز</div>
     </div>
     <button type="submit" class="btn btn-primary w-100">إنشاء حسابي</button>

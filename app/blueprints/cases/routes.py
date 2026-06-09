@@ -12,6 +12,7 @@ cases_bp = Blueprint('cases', __name__, template_folder='../../templates/cases')
 CASE_TYPES = [
     ('criminal', 'جنائية'), ('civil', 'مدنية'), ('commercial', 'تجارية'),
     ('administrative', 'إدارية'), ('labor', 'عمالية'), ('family', 'أسرة'),
+    ('real_estate', 'عقارية'), ('intellectual_property', 'حقوق فكرية'),
     ('constitutional', 'دستورية'), ('enforcement', 'تنفيذ'),
 ]
 CASE_STATUSES = [
@@ -21,6 +22,7 @@ CASE_STATUSES = [
 PRIORITIES = [('normal', 'عادية'), ('important', 'مهمة'), ('critical', 'حرجة')]
 CAPACITIES = [
     ('plaintiff', 'مدعي'), ('defendant', 'مدعى عليه'),
+    ('accused', 'متهم'), ('victim', 'مجني عليه'),
     ('appellant', 'مستأنف'), ('respondent', 'مطعون ضده'), ('other', 'أخرى'),
 ]
 FEE_TYPES = [('fixed', 'مبلغ ثابت'), ('percentage', 'نسبة'), ('hourly', 'بالساعة'), ('mixed', 'مختلط')]
@@ -150,11 +152,11 @@ def create():
         db.session.add(case)
         db.session.flush()
 
-        # Create Payment record for retainer if paid upfront
+        # Create Payment + auto-Invoice for retainer if paid upfront.
         if retainer_amount > 0:
-            from app.models.financial import Payment
+            from app.services.billing import record_payment, make_auto_invoice_description
             from app.utils.helpers import egypt_today
-            initial_payment = Payment(
+            record_payment(
                 tenant_id=g.tenant_id,
                 client_id=client_id,
                 case_id=case.id,
@@ -163,8 +165,8 @@ def create():
                 payment_method='cash',
                 notes='مقدم أتعاب عند فتح القضية',
                 recorded_by=g.current_user.id,
+                auto_invoice_description=make_auto_invoice_description(case=case, client=case.client),
             )
-            db.session.add(initial_payment)
 
         db.session.commit()
 

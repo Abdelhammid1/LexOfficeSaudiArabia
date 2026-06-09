@@ -178,6 +178,8 @@
     <div class="today-badge">
       <i class="bi bi-calendar3"></i>
       <span>{{ now().strftime('%A، %d %b %Y') }}</span>
+      <span style="color:var(--tm);margin:0 4px">·</span>
+      <span style="color:var(--ts)">{{ now()|hijri_long }}</span>
     </div>
   </div>
 
@@ -266,7 +268,11 @@
             'first':  'أولى',
             'evidence':'إثبات',
             'pleading':'مرافعة',
+            'interrogation':'استجواب',
+            'reconciliation':'صلح',
             'judgment':'حكم',
+            'emergency':'طارئة',
+            'postponement':'تأجيل',
           }.get(_t, _t) %}
           <a class="session-item" href="{{ url_for('sessions.show', id=s.id) }}">
             <div class="session-time">
@@ -325,6 +331,7 @@
                 <span class="task-priority {{ _pri }}"></span>
                 {% if t.deadline %}
                   {{ t.deadline.strftime('%Y-%m-%d %H:%M') }}
+                  <span style="color:var(--tm)">· {{ t.deadline|hijri }}</span>
                   {% if t.deadline < now() %} · <span style="color:var(--red)">متأخر</span>{% endif %}
                 {% else %}بدون موعد{% endif %}
               </div>
@@ -446,7 +453,8 @@
           } %}
           {% set _type_ar = {
               'criminal':'جنائي','civil':'مدني','commercial':'تجاري','administrative':'إداري',
-              'labor':'عمالي','family':'أسرة','constitutional':'دستوري','enforcement':'تنفيذ'
+              'labor':'عمالي','family':'أسرة','real_estate':'عقاري','intellectual_property':'حقوق فكرية',
+              'constitutional':'دستوري','enforcement':'تنفيذ'
           } %}
           {% for c in recent_cases %}
           <tr onclick="window.location='{{ url_for('cases.show', id=c.id) }}'" style="cursor:pointer">

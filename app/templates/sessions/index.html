@@ -57,12 +57,15 @@
                     {% set is_today = s.session_date == today %}
                     {% set is_past = s.session_date < today and not s.result %}
                     <tr style="{% if is_past %}border-right: 3px solid var(--warning);{% elif is_today %}border-right: 3px solid var(--primary);{% endif %}">
-                        <td>{{ s.session_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {{ s.session_date.strftime('%Y-%m-%d') }}
+                            <div class="text-muted small">{{ s.session_date|hijri }}</div>
+                        </td>
                         <td>{{ s.session_time.strftime('%H:%M') if s.session_time else '-' }}</td>
                         <td><a href="{{ url_for('cases.show', id=s.case_id) }}">{{ s.case.case_number or '-' }}</a></td>
                         <td>{{ s.court.name[:30] if s.court else '-' }}</td>
                         <td>
-                            {% set type_map = {'first':'أولى','evidence':'إثبات','pleading':'مرافعة','judgment':'حكم','emergency':'طارئة','postponement':'تأجيل'} %}
+                            {% set type_map = {'first':'أولى','evidence':'إثبات','pleading':'مرافعة','interrogation':'استجواب','reconciliation':'صلح','judgment':'حكم','emergency':'طارئة','postponement':'تأجيل'} %}
                             {{ type_map.get(s.session_type, s.session_type or '-') }}
                         </td>
                         <td>{{ s.responsible_lawyer.full_name if s.responsible_lawyer else '-' }}</td>

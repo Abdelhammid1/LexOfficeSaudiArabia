@@ -12,6 +12,7 @@ sessions_bp = Blueprint('sessions', __name__, template_folder='../../templates/s
 
 SESSION_TYPES = [
     ('first', 'أولى'), ('evidence', 'إثبات'), ('pleading', 'مرافعة'),
+    ('interrogation', 'استجواب'), ('reconciliation', 'صلح'),
     ('judgment', 'حكم'), ('emergency', 'طارئة'), ('postponement', 'تأجيل'),
 ]
 SESSION_RESULTS = [

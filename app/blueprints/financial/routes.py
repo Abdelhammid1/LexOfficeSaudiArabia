@@ -123,6 +123,7 @@ def index():
     case_type_labels = {
         'criminal': 'جنائية', 'civil': 'مدنية', 'commercial': 'تجارية',
         'administrative': 'إدارية', 'labor': 'عمالية', 'family': 'أسرة',
+        'real_estate': 'عقارية', 'intellectual_property': 'حقوق فكرية',
         'constitutional': 'دستورية', 'enforcement': 'تنفيذ',
     }
     revenue_by_case_type = sorted(
@@ -248,9 +249,14 @@ def payments():
 @financial_bp.route('/payments/create', methods=['GET', 'POST'])
 @permission_required('financial', 'create')
 def create_payment():
-    """Record a new payment."""
+    """Record a new payment. Auto-issues an invoice unless one is linked."""
     clients = Client.query.filter_by(tenant_id=g.tenant_id, is_active=True).order_by(Client.full_name).all()
     cases = Case.query.filter_by(tenant_id=g.tenant_id).order_by(Case.case_number).all()
+    # Open invoices the user can apply the payment to.
+    open_invoices = Invoice.query.filter(
+        Invoice.tenant_id == g.tenant_id,
+        Invoice.status.in_(['draft', 'sent', 'partially_paid', 'overdue']),
+    ).order_by(Invoice.created_at.desc()).all()
 
     if request.method == 'POST':
         errors = []
@@ -272,20 +278,24 @@ def create_payment():
             for e in errors:
                 flash(e, 'danger')
             return render_template('financial/create_payment.html', clients=clients, cases=cases,
+                                   open_invoices=open_invoices,
                                    form=request.form, payment_methods=PAYMENT_METHODS)
 
-        payment = Payment(
+        from app.services.billing import record_payment
+        client = Client.query.get(client_id)
+        payment, invoice = record_payment(
             tenant_id=g.tenant_id,
             client_id=client_id,
             case_id=request.form.get('case_id', type=int) or None,
+            invoice_id=request.form.get('invoice_id', type=int) or None,
             amount=amount,
             payment_date=datetime.strptime(payment_date_str, '%Y-%m-%d').date(),
             payment_method=payment_method,
             reference_number=request.form.get('reference_number', '').strip() or None,
             notes=request.form.get('notes', '').strip() or None,
             recorded_by=g.current_user.id,
+            auto_invoice_description=f'أتعاب — {client.full_name}' if client else 'أتعاب',
         )
-        db.session.add(payment)
         db.session.commit()
 
         from app.services.notification_service import notify_tenant_users
@@ -293,7 +303,7 @@ def create_payment():
             tenant_id=g.tenant_id,
             notification_type='payment_received',
             title=f'تم تسجيل دفعة: {amount} ر.س',
-            body=f'الموكل: {payment.client.full_name if payment.client else "-"}',
+            body=f'الموكل: {payment.client.full_name if payment.client else "-"} · فاتورة {invoice.invoice_number}',
             priority='success',
             related_type='payment',
             related_id=payment.id,
@@ -302,12 +312,13 @@ def create_payment():
         )
         db.session.commit()
 
-        flash('تم تسجيل الدفعة بنجاح', 'success')
+        flash(f'تم تسجيل الدفعة وربطها بالفاتورة {invoice.invoice_number}', 'success')
         return redirect(url_for('financial.show_payment', id=payment.id))
 
     pre_client = request.args.get('client_id', type=int)
     pre_case = request.args.get('case_id', type=int)
     return render_template('financial/create_payment.html', clients=clients, cases=cases,
+                           open_invoices=open_invoices,
                            form=request.args, payment_methods=PAYMENT_METHODS,
                            pre_client_id=pre_client, pre_case_id=pre_case)
 
@@ -324,9 +335,32 @@ def show_payment(id):
 @financial_bp.route('/payments/<int:id>/delete', methods=['POST'])
 @permission_required('financial', 'delete')
 def delete_payment(id):
-    """Delete a payment."""
+    """Delete a payment. If it was applied to an invoice, recompute that
+    invoice's status from the remaining linked payments. Standalone
+    auto-issued invoices (no case, one item, one payment, total == payment
+    amount) are removed with the payment because they have no
+    independent life. Case master invoices always survive — they
+    represent the agreed case fee, not the individual payment."""
     payment = Payment.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
+    invoice = payment.invoice
+    from app.services.billing import AUTO_INVOICE_NOTE, recompute_invoice_status
+    invoice_is_standalone_auto = (
+        invoice is not None
+        and invoice.case_id is None
+        and invoice.notes == AUTO_INVOICE_NOTE
+        and invoice.items.count() == 1
+        and invoice.payments.count() == 1
+        and float(invoice.subtotal or 0) == float(payment.amount or 0)
+    )
     db.session.delete(payment)
+    if invoice is not None:
+        if invoice_is_standalone_auto:
+            for item in invoice.items.all():
+                db.session.delete(item)
+            db.session.delete(invoice)
+        else:
+            db.session.flush()
+            recompute_invoice_status(invoice)
     db.session.commit()
     flash('تم حذف الدفعة', 'warning')
     return redirect(url_for('financial.payments'))
@@ -441,33 +475,75 @@ def create_invoice():
 @financial_bp.route('/invoices/<int:id>')
 @permission_required('financial', 'view')
 def show_invoice(id):
-    """Show invoice details with items."""
+    """Show invoice details with items.
+
+    Status panel uses the CASE-level rollup when the invoice is tied to a
+    case that has an agreed fee — the user's mental model is "this case
+    has an agreed fee of X, payments chip away at it." Otherwise we fall
+    back to the invoice-level rollup. Either way the % is capped at 100;
+    any overpayment is surfaced as a credit balance.
+    """
     invoice = Invoice.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
     items = invoice.items.all()
     status_map = dict(INVOICE_STATUSES)
     item_type_map = dict(ITEM_TYPES)
+    method_map = dict(PAYMENT_METHODS)
 
-    # Calculate payments against this invoice's case/client
-    paid_amount = 0
-    if invoice.case_id:
-        paid_amount = float(db.session.query(func.coalesce(func.sum(Payment.amount), 0)).filter(
-            Payment.tenant_id == g.tenant_id,
-            Payment.case_id == invoice.case_id,
-            Payment.client_id == invoice.client_id
-        ).scalar())
+    linked_payments = invoice.payments.order_by(Payment.payment_date.desc()).all()
+
+    # Case-level rollup: when invoice belongs to a case with a known fee.
+    case_summary = None
+    if invoice.case and invoice.case.fee_amount and float(invoice.case.fee_amount) > 0:
+        case = invoice.case
+        fee = float(case.fee_amount)
+        total_paid = case.total_paid  # sum of ALL case payments, not just this invoice's
+        remaining = max(fee - total_paid, 0)
+        credit = max(total_paid - fee, 0)
+        pct = min(round((total_paid / fee) * 100), 100) if fee > 0 else 0
+        case_payments = sorted(
+            case.case_payments.all(),
+            key=lambda p: p.payment_date, reverse=True,
+        )
+        case_summary = {
+            'fee_amount': fee,
+            'total_paid': total_paid,
+            'remaining': remaining,
+            'credit': credit,
+            'pct': pct,
+            'fully_paid': total_paid >= fee,
+            'payments': case_payments,
+        }
+
+    # Invoice-level rollup (always computed for the fallback panel + edit guard).
+    inv_paid = float(sum((p.amount or 0) for p in linked_payments))
+    inv_total = float(invoice.total or 0)
+    inv_pct = min(round((inv_paid / inv_total) * 100), 100) if inv_total > 0 else 0
+    inv_credit = max(inv_paid - inv_total, 0)
+    inv_remaining = max(inv_total - inv_paid, 0)
 
     return render_template('financial/show_invoice.html', invoice=invoice, items=items,
                            status_map=status_map, item_type_map=item_type_map,
-                           paid_amount=paid_amount)
+                           method_map=method_map,
+                           linked_payments=linked_payments,
+                           case_summary=case_summary,
+                           inv_paid=inv_paid, inv_pct=inv_pct,
+                           inv_credit=inv_credit, inv_remaining=inv_remaining,
+                           # legacy template var for backward compat
+                           paid_amount=inv_paid)
 
 
 @financial_bp.route('/invoices/<int:id>/edit', methods=['GET', 'POST'])
 @permission_required('financial', 'edit')
 def edit_invoice(id):
-    """Edit invoice."""
+    """Edit invoice. Refuses to lower the total below what's already been
+    paid against this invoice — otherwise the status math would break."""
     invoice = Invoice.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
     clients = Client.query.filter_by(tenant_id=g.tenant_id, is_active=True).order_by(Client.full_name).all()
     cases = Case.query.filter_by(tenant_id=g.tenant_id).order_by(Case.case_number).all()
+    paid_amount = float(db.session.query(func.coalesce(func.sum(Payment.amount), 0)).filter(
+        Payment.invoice_id == invoice.id, Payment.tenant_id == g.tenant_id
+    ).scalar() or 0)
+    linked_payments_count = invoice.payments.count()
 
     if request.method == 'POST':
         invoice.client_id = request.form.get('client_id', type=int)
@@ -499,6 +575,23 @@ def edit_invoice(id):
 
         db.session.flush()
         invoice.calculate_totals()
+
+        # If the new total would be lower than what's already been paid
+        # against this invoice, roll back — that would mean "overpaid"
+        # which breaks the dashboard math. Tell the user, don't crash.
+        if paid_amount > 0 and float(invoice.total or 0) < paid_amount:
+            db.session.rollback()
+            flash(
+                f'لا يمكن تخفيض إجمالي الفاتورة إلى أقل من المبلغ المدفوع ({paid_amount:,.2f} ر.س). '
+                f'احذف الدفعات المرتبطة أولاً إذا كنت تريد تعديل الإجمالي.',
+                'danger'
+            )
+            return redirect(url_for('financial.edit_invoice', id=invoice.id))
+
+        # Recompute paid/partially_paid based on linked payments — the
+        # user may have just changed the total or item amounts.
+        from app.services.billing import recompute_invoice_status
+        recompute_invoice_status(invoice)
         db.session.commit()
 
         flash('تم تحديث الفاتورة بنجاح', 'success')
@@ -507,7 +600,9 @@ def edit_invoice(id):
     items = invoice.items.all()
     return render_template('financial/edit_invoice.html', invoice=invoice, items=items,
                            clients=clients, cases=cases, item_types=ITEM_TYPES,
-                           invoice_statuses=INVOICE_STATUSES)
+                           invoice_statuses=INVOICE_STATUSES,
+                           linked_payments_count=linked_payments_count,
+                           paid_amount=paid_amount)
 
 
 @financial_bp.route('/invoices/<int:id>/update-status', methods=['POST'])

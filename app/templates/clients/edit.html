@@ -34,7 +34,8 @@
                 </div>
                 <div class="col-md-4" id="nationalIdField">
                     <label class="form-label">رقم الهوية</label>
-                    <input type="text" name="national_id" class="form-control" dir="ltr" maxlength="10" inputmode="numeric" pattern="[12]\d{9}" placeholder="1xxxxxxxxx / 2xxxxxxxxx" value="{{ client.national_id or '' }}">
+                    <input type="text" id="nationalId" name="national_id" class="form-control" dir="ltr" maxlength="10" inputmode="numeric" pattern="[12]\d{9}" placeholder="1xxxxxxxxx / 2xxxxxxxxx" value="{{ client.national_id or '' }}">
+                    <div id="nationalIdFeedback" class="form-text">10 أرقام تبدأ بـ 1 (سعودي) أو 2 (مقيم)</div>
                 </div>
                 <div class="col-md-4" id="commercialRegField" style="display:none;">
                     <label class="form-label">السجل التجاري</label>
@@ -42,7 +43,21 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">تاريخ الميلاد</label>
-                    <input type="date" name="date_of_birth" class="form-control datepicker" value="{{ client.date_of_birth.strftime('%Y-%m-%d') if client.date_of_birth else '' }}">
+                    <div class="btn-group btn-group-sm mb-1" role="group" aria-label="نوع التقويم">
+                        <input type="radio" class="btn-check" name="_dob_cal" id="dobCalH" value="h" checked>
+                        <label class="btn btn-outline-secondary" for="dobCalH">هجري</label>
+                        <input type="radio" class="btn-check" name="_dob_cal" id="dobCalG" value="g">
+                        <label class="btn btn-outline-secondary" for="dobCalG">ميلادي</label>
+                    </div>
+                    <input type="date" id="dobGregorian" name="date_of_birth" class="form-control datepicker d-none" value="{{ client.date_of_birth.strftime('%Y-%m-%d') if client.date_of_birth else '' }}">
+                    <div id="dobHijriBox">
+                        <div class="d-flex gap-1">
+                            <input type="number" id="dobHDay" class="form-control" placeholder="يوم" min="1" max="30" dir="ltr">
+                            <select id="dobHMonth" class="form-select" dir="ltr"></select>
+                            <input type="number" id="dobHYear" class="form-control" placeholder="سنة" min="1300" max="1500" dir="ltr">
+                        </div>
+                        <div id="dobConv" class="form-text"></div>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">الجنسية</label>
@@ -160,5 +175,57 @@ document.getElementById('clientType').addEventListener('change', function() {
     document.getElementById('commercialRegField').style.display = isCompany ? '' : 'none';
 });
 document.getElementById('clientType').dispatchEvent(new Event('change'));
+
+// ── National ID: real-time feedback ──
+(function() {
+    const nid = document.getElementById('nationalId');
+    const fb = document.getElementById('nationalIdFeedback');
+    if (!nid || !fb) return;
+    function check() {
+        const v = (nid.value || '').trim();
+        nid.classList.remove('is-valid', 'is-invalid');
+        if (v.length === 0) {
+            fb.textContent = '10 أرقام تبدأ بـ 1 (سعودي) أو 2 (مقيم)';
+            fb.className = 'form-text';
+            return;
+        }
+        if (!/^\d+$/.test(v)) {
+            nid.classList.add('is-invalid');
+            fb.textContent = 'أرقام فقط';
+            fb.className = 'form-text text-danger';
+            return;
+        }
+        if (v.length < 10) {
+            fb.textContent = 'باقي ' + (10 - v.length) + ' أرقام';
+            fb.className = 'form-text text-muted';
+            return;
+        }
+        if (!/^[12]/.test(v)) {
+            nid.classList.add('is-invalid');
+            fb.textContent = 'يبدأ بـ 1 (سعودي) أو 2 (مقيم)';
+            fb.className = 'form-text text-danger';
+            return;
+        }
+        nid.classList.add('is-valid');
+        fb.textContent = v.startsWith('1') ? 'هوية سعودية ✓' : 'إقامة ✓';
+        fb.className = 'form-text text-success';
+    }
+    nid.addEventListener('input', check);
+    if (nid.value) check();
+})();
+
+// ── DOB Hijri / Gregorian toggle ──
+if (window.HijriConv) {
+    HijriConv.bindToggle({
+        gregInputId: 'dobGregorian',
+        hijriBoxId: 'dobHijriBox',
+        hDayId: 'dobHDay',
+        hMonthId: 'dobHMonth',
+        hYearId: 'dobHYear',
+        convLabelId: 'dobConv',
+        radioName: '_dob_cal',
+        defaultMode: 'h'
+    });
+}
 </script>
 {% endblock %}

@@ -7,6 +7,19 @@
     <a href="{{ url_for('financial.show_invoice', id=invoice.id) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right me-1"></i> العودة</a>
 </div>
 
+{% if linked_payments_count and linked_payments_count > 0 %}
+<div class="alert alert-warning d-flex align-items-start gap-2" role="alert">
+    <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+    <div>
+        <strong>تنبيه:</strong>
+        هذه الفاتورة مرتبطة بـ <strong>{{ linked_payments_count }}</strong> دفعة
+        بإجمالي <strong dir="ltr">{{ '{:,.2f}'.format(paid_amount) }}</strong> ر.س.
+        لا يمكن تخفيض الإجمالي إلى أقل من هذا المبلغ.
+        احذف الدفعات أولاً إذا أردت تعديل الإجمالي بحرية.
+    </div>
+</div>
+{% endif %}
+
 <form method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 

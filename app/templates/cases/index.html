@@ -82,7 +82,7 @@
 {% endblock %}
 
 {% block content %}
-{% set type_map = {'criminal':'جنائية','civil':'مدنية','commercial':'تجارية','administrative':'إدارية','labor':'عمالية','family':'أسرة','constitutional':'دستورية','enforcement':'تنفيذ'} %}
+{% set type_map = {'criminal':'جنائية','civil':'مدنية','commercial':'تجارية','administrative':'إدارية','labor':'عمالية','family':'أسرة','real_estate':'عقارية','intellectual_property':'حقوق فكرية','constitutional':'دستورية','enforcement':'تنفيذ'} %}
 {% set status_map = {'new':'جديدة','active':'نشطة','awaiting_judgment':'منتظرة حكم','suspended':'موقوفة','closed':'مغلقة'} %}
 {% set status_class = {'new':'b-new','active':'b-open','awaiting_judgment':'b-watch','suspended':'b-hold','closed':'b-done'} %}
 {% set _palette = ['#1849A9','#0F7A55','#7A5000','#9B2020','#7B3F9E','#078FD2'] %}

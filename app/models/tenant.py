@@ -28,6 +28,10 @@ class Tenant(db.Model):
     # 'eg' | 'sa' — frozen at registration from g.market. Drives plan list,
     # phone validation, currency display, courts dropdown, bar body label.
     market = db.Column(db.String(2), nullable=False, default='sa', index=True)
+    # Default tax rate (%) applied to auto-issued invoices on payments.
+    # 0 = no VAT. 15 = KSA standard. Per-tenant so VAT-registered offices
+    # gross up their auto-invoices while others stay flat.
+    default_tax_rate = db.Column(db.Numeric(5, 2), nullable=False, default=0, server_default='0')
     # Tracks the current calendar month (YYYY-MM) for which we already sent
     # the 80% AI-quota warning email. Reset implicitly on month rollover by
     # comparing against current month before sending again.
@@ -75,6 +79,7 @@ class Tenant(db.Model):
             'country': self.country,
             'city': self.city,
             'market': self.market,
+            'default_tax_rate': float(self.default_tax_rate) if self.default_tax_rate is not None else 0,
             'acquisition_source': self.acquisition_source,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,

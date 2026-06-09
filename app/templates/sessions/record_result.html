@@ -9,7 +9,7 @@
 
 <div class="card" style="max-width: 600px;">
     <div class="card-header">
-        جلسة {{ session.session_date.strftime('%Y-%m-%d') }} - {{ session.case.case_number or '' }}
+        جلسة {{ session.session_date.strftime('%Y-%m-%d') }} <small class="text-muted">· {{ session.session_date|hijri }}</small> - {{ session.case.case_number or '' }}
     </div>
     <div class="card-body">
         <form method="POST">

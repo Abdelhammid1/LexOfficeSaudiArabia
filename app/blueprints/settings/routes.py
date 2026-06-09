@@ -36,6 +36,15 @@ def update_office():
     tenant.fax = request.form.get('fax', '').strip() or None
     tenant.email = request.form.get('email', '').strip() or None
 
+    # Default tax rate (%) for auto-issued invoices. Clamp to 0–100.
+    raw_tax = request.form.get('default_tax_rate', '').strip()
+    if raw_tax != '':
+        try:
+            tax = float(raw_tax)
+            tenant.default_tax_rate = max(0, min(100, tax))
+        except ValueError:
+            flash('قيمة الضريبة غير صالحة', 'warning')
+
     logo = request.files.get('logo')
     if logo and logo.filename:
         filename = secure_filename(logo.filename)

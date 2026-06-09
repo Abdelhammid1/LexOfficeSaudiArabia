@@ -27,7 +27,21 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">تاريخ الجلسة <span class="text-danger">*</span></label>
-                    <input type="date" name="session_date" class="form-control" value="{{ form.get('session_date', '') }}" required>
+                    <div class="btn-group btn-group-sm mb-1" role="group" aria-label="نوع التقويم">
+                        <input type="radio" class="btn-check" name="_sd_cal" id="sdCalH" value="h" checked>
+                        <label class="btn btn-outline-secondary" for="sdCalH">هجري</label>
+                        <input type="radio" class="btn-check" name="_sd_cal" id="sdCalG" value="g">
+                        <label class="btn btn-outline-secondary" for="sdCalG">ميلادي</label>
+                    </div>
+                    <input type="date" id="sessionDateG" name="session_date" class="form-control d-none" value="{{ form.get('session_date', '') }}" required>
+                    <div id="sessionDateHBox">
+                        <div class="d-flex gap-1">
+                            <input type="number" id="sdHDay" class="form-control" placeholder="يوم" min="1" max="30" dir="ltr">
+                            <select id="sdHMonth" class="form-select" dir="ltr"></select>
+                            <input type="number" id="sdHYear" class="form-control" placeholder="سنة" min="1300" max="1500" dir="ltr">
+                        </div>
+                        <div id="sdConv" class="form-text"></div>
+                    </div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">الوقت</label>
@@ -76,4 +90,20 @@
         <a href="{{ url_for('sessions.index') }}" class="btn btn-outline-secondary">إلغاء</a>
     </div>
 </form>
+
+<script>
+if (window.HijriConv) {
+    HijriConv.bindToggle({
+        gregInputId: 'sessionDateG',
+        hijriBoxId: 'sessionDateHBox',
+        hDayId: 'sdHDay',
+        hMonthId: 'sdHMonth',
+        hYearId: 'sdHYear',
+        convLabelId: 'sdConv',
+        radioName: '_sd_cal',
+        defaultMode: 'h',
+        prefillToday: true
+    });
+}
+</script>
 {% endblock %}

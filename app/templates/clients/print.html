@@ -73,7 +73,7 @@
         <thead><tr><th>رقم القضية</th><th>الموضوع</th><th>النوع</th><th>الحالة</th><th>المحامي</th><th>الأتعاب</th></tr></thead>
         <tbody>
             {% set status_ar = {'new':'جديدة','active':'نشطة','awaiting_judgment':'منتظرة حكم','suspended':'موقوفة','closed':'مغلقة'} %}
-            {% set type_ar = {'criminal':'جنائية','civil':'مدنية','commercial':'تجارية','administrative':'إدارية','labor':'عمالية','family':'أسرة','enforcement':'تنفيذ'} %}
+            {% set type_ar = {'criminal':'جنائية','civil':'مدنية','commercial':'تجارية','administrative':'إدارية','labor':'عمالية','family':'أسرة','real_estate':'عقارية','intellectual_property':'حقوق فكرية','constitutional':'دستورية','enforcement':'تنفيذ'} %}
             {% for case in cases %}
             <tr>
                 <td>{{ case.case_number or '-' }}</td>

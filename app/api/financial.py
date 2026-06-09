@@ -243,18 +243,24 @@ def api_create_payment():
     if not payment_date:
         return validation_error({'payment_date': 'تنسيق التاريخ غير صالح (YYYY-MM-DD)'})
 
-    payment = Payment(
-        tenant_id=g.tenant_id,
-        client_id=int(client_id),
-        case_id=int(data['case_id']) if data.get('case_id') else None,
-        amount=amount,
-        payment_date=payment_date,
-        payment_method=payment_method,
-        reference_number=(data.get('reference_number') or '').strip() or None,
-        notes=(data.get('notes') or '').strip() or None,
-        recorded_by=g.current_user.id,
-    )
-    db.session.add(payment)
+    from app.services.billing import record_payment
+    client = Client.query.filter_by(id=int(client_id), tenant_id=g.tenant_id).first()
+    try:
+        payment, invoice = record_payment(
+            tenant_id=g.tenant_id,
+            client_id=int(client_id),
+            case_id=int(data['case_id']) if data.get('case_id') else None,
+            invoice_id=int(data['invoice_id']) if data.get('invoice_id') else None,
+            amount=amount,
+            payment_date=payment_date,
+            payment_method=payment_method,
+            reference_number=(data.get('reference_number') or '').strip() or None,
+            notes=(data.get('notes') or '').strip() or None,
+            recorded_by=g.current_user.id,
+            auto_invoice_description=f'أتعاب — {client.full_name}' if client else 'أتعاب',
+        )
+    except ValueError as ve:
+        return validation_error({'invoice_id': str(ve)})
     db.session.commit()
 
     from app.services.notification_service import notify_tenant_users
@@ -262,7 +268,7 @@ def api_create_payment():
         tenant_id=g.tenant_id,
         notification_type='payment_received',
         title=f'تم تسجيل دفعة: {amount} ر.س',
-        body=f'الموكل: {payment.client.full_name if payment.client else "-"}',
+        body=f'الموكل: {payment.client.full_name if payment.client else "-"} · فاتورة {invoice.invoice_number}',
         priority='success',
         related_type='payment',
         related_id=payment.id,
@@ -285,9 +291,29 @@ def api_show_payment(id):
 @api_bp.route('/financial/payments/<int:id>', methods=['DELETE'])
 @api_permission_required('financial', 'delete')
 def api_delete_payment(id):
-    """Delete a payment."""
+    """Delete a payment. Standalone auto-invoices are cleaned up with the
+    payment; case master invoices always survive and have their status
+    recomputed."""
     payment = Payment.query.filter_by(id=id, tenant_id=g.tenant_id).first_or_404()
+    invoice = payment.invoice
+    from app.services.billing import AUTO_INVOICE_NOTE, recompute_invoice_status
+    invoice_is_standalone_auto = (
+        invoice is not None
+        and invoice.case_id is None
+        and invoice.notes == AUTO_INVOICE_NOTE
+        and invoice.items.count() == 1
+        and invoice.payments.count() == 1
+        and float(invoice.subtotal or 0) == float(payment.amount or 0)
+    )
     db.session.delete(payment)
+    if invoice is not None:
+        if invoice_is_standalone_auto:
+            for item in invoice.items.all():
+                db.session.delete(item)
+            db.session.delete(invoice)
+        else:
+            db.session.flush()
+            recompute_invoice_status(invoice)
     db.session.commit()
     return success_response(message='تم حذف الدفعة')
 

@@ -4,7 +4,7 @@
 {% block content %}
 <div class="page-header">
     <div>
-        <h3>جلسة {{ session.session_date.strftime('%Y-%m-%d') }}</h3>
+        <h3>جلسة {{ session.session_date.strftime('%Y-%m-%d') }} <small class="text-muted fw-normal" style="font-size:0.65em">· {{ session.session_date|hijri }}</small></h3>
         <small class="text-muted">{{ session.case.case_number or '' }} - {{ session.case.subject[:50] if session.case and session.case.subject else '' }}</small>
     </div>
     <div class="d-flex gap-2">
@@ -25,6 +25,7 @@
                     <div class="col-md-3">
                         <small class="text-muted">التاريخ</small>
                         <div><strong>{{ session.session_date.strftime('%Y-%m-%d') }}</strong></div>
+                        <small class="text-muted">{{ session.session_date|hijri }}</small>
                     </div>
                     <div class="col-md-3">
                         <small class="text-muted">الوقت</small>
@@ -81,6 +82,7 @@
                     <div class="col-md-4">
                         <small class="text-muted">الجلسة القادمة</small>
                         <div><strong>{{ session.next_session_date.strftime('%Y-%m-%d') }}</strong></div>
+                        <small class="text-muted">{{ session.next_session_date|hijri }}</small>
                     </div>
                     {% endif %}
                 </div>

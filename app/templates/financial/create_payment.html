@@ -53,6 +53,20 @@
                     <input type="text" name="reference_number" class="form-control" value="{{ form.get('reference_number', '') }}">
                 </div>
                 <div class="col-md-12">
+                    <label class="form-label">ربط بفاتورة موجودة</label>
+                    <select name="invoice_id" class="form-select">
+                        <option value="">-- إنشاء فاتورة جديدة تلقائياً --</option>
+                        {% for inv in open_invoices %}
+                        <option value="{{ inv.id }}" {% if form.get('invoice_id') == inv.id|string %}selected{% endif %}>
+                            {{ inv.invoice_number }} — {{ inv.client.full_name if inv.client else '' }} — {{ '{:,.0f}'.format(inv.total|float) }} ر.س
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">
+                        إذا تركتها فارغة سيتم إنشاء فاتورة مدفوعة تلقائياً بنفس قيمة الدفعة.
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <label class="form-label">ملاحظات</label>
                     <textarea name="notes" class="form-control" rows="2">{{ form.get('notes', '') }}</textarea>
                 </div>

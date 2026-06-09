@@ -53,6 +53,7 @@
                     <tr>
                         <th>التاريخ</th>
                         <th>القضية</th>
+                        <th>الفاتورة</th>
                         <th>المبلغ</th>
                         <th>طريقة الدفع</th>
                     </tr>
@@ -62,6 +63,13 @@
                     <tr>
                         <td>{{ p.payment_date.strftime('%Y-%m-%d') }}</td>
                         <td>{{ p.case.case_number if p.case else '-' }}</td>
+                        <td>
+                            {% if p.invoice %}
+                            <a href="{{ url_for('financial.show_invoice', id=p.invoice_id) }}">{{ p.invoice.invoice_number }}</a>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
                         <td class="text-success" dir="ltr"><strong>{{ '{:,.0f}'.format(p.amount) }}</strong></td>
                         <td>{{ method_map.get(p.payment_method, p.payment_method) }}</td>
                     </tr>

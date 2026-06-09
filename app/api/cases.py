@@ -121,11 +121,11 @@ def api_cases_create():
     db.session.add(case)
     db.session.flush()
 
-    # Create Payment record for retainer if paid upfront
+    # Create Payment + auto-Invoice for retainer if paid upfront.
     if retainer_amount > 0:
-        from app.models.financial import Payment
+        from app.services.billing import record_payment, make_auto_invoice_description
         from app.utils.helpers import egypt_today
-        initial_payment = Payment(
+        record_payment(
             tenant_id=g.tenant_id,
             client_id=client_id,
             case_id=case.id,
@@ -134,8 +134,8 @@ def api_cases_create():
             payment_method='cash',
             notes='مقدم أتعاب عند فتح القضية',
             recorded_by=g.current_user.id,
+            auto_invoice_description=make_auto_invoice_description(case=case, client=case.client),
         )
-        db.session.add(initial_payment)
 
     db.session.commit()
 

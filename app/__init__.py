@@ -165,6 +165,10 @@ def _register_blueprints(app):
 
 def _register_context_processors(app):
     """Register Jinja2 context processors."""
+    from app.utils.hijri import hijri_str, hijri_long
+    app.jinja_env.filters['hijri'] = hijri_str
+    app.jinja_env.filters['hijri_long'] = hijri_long
+
     @app.context_processor
     def inject_globals():
         from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request

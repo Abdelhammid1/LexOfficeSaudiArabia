@@ -45,6 +45,16 @@
                     <input type="email" name="email" class="form-control" dir="ltr" value="{{ tenant.email or '' }}">
                 </div>
                 <div class="col-md-6">
+                    <label class="form-label">نسبة الضريبة الافتراضية (%) </label>
+                    <input type="number" name="default_tax_rate" class="form-control" dir="ltr"
+                           min="0" max="100" step="0.01"
+                           value="{{ '{:.2f}'.format(tenant.default_tax_rate|float) if tenant.default_tax_rate is not none else '0.00' }}">
+                    <div class="form-text">
+                        تُطبَّق على الفواتير المُنشأة تلقائياً من الدفعات.
+                        ضع <strong>15</strong> إذا كان المكتب مُسجَّلاً في ضريبة القيمة المضافة، وإلا اتركها <strong>0</strong>.
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label">شعار المكتب</label>
                     {% if tenant.logo_path %}
                     <div class="mb-2">
