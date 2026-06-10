@@ -167,6 +167,12 @@ def record_result(id):
             if case and case.status not in ('closed',):
                 case.status = 'awaiting_judgment'
 
+        # Mark this session's reminder task as done — the session has now
+        # been held, so the reminder is no longer outstanding.
+        if sess.result:
+            from app.services.tasks_service import complete_session_reminder_task
+            complete_session_reminder_task(sess)
+
         db.session.commit()
 
         from app.services.notification_service import notify_tenant_users
@@ -211,6 +217,8 @@ def edit(id):
         sess.preparation_notes = request.form.get('preparation_notes', '').strip() or None
         sess.responsible_lawyer_id = request.form.get('responsible_lawyer_id', type=int) or sess.responsible_lawyer_id
 
+        from app.services.tasks_service import sync_session_reminder_task
+        sync_session_reminder_task(sess)
         db.session.commit()
         flash('تم تحديث الجلسة بنجاح', 'success')
         return redirect(url_for('sessions.show', id=sess.id))
