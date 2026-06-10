@@ -215,7 +215,11 @@ document.getElementById('clientType').dispatchEvent(new Event('change'));
 })();
 
 // ── DOB Hijri / Gregorian toggle ──
-if (window.HijriConv) {
+// Wait for DOMContentLoaded — this inline script is parsed BEFORE
+// hijri.js (which is loaded by base.html near the </body>), so
+// window.HijriConv doesn't exist at the moment this script first runs.
+document.addEventListener('DOMContentLoaded', function () {
+    if (!window.HijriConv) return;
     HijriConv.bindToggle({
         gregInputId: 'dobGregorian',
         hijriBoxId: 'dobHijriBox',
@@ -226,6 +230,6 @@ if (window.HijriConv) {
         radioName: '_dob_cal',
         defaultMode: 'h'
     });
-}
+});
 </script>
 {% endblock %}

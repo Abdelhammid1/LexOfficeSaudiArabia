@@ -92,7 +92,9 @@
 </form>
 
 <script>
-if (window.HijriConv) {
+// Must defer until hijri.js loads (at end of base.html, after this script).
+document.addEventListener('DOMContentLoaded', function () {
+    if (!window.HijriConv) return;
     HijriConv.bindToggle({
         gregInputId: 'sessionDateG',
         hijriBoxId: 'sessionDateHBox',
@@ -104,6 +106,6 @@ if (window.HijriConv) {
         defaultMode: 'h',
         prefillToday: true
     });
-}
+});
 </script>
 {% endblock %}
