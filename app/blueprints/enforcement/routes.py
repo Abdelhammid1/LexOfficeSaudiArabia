@@ -17,6 +17,14 @@ ENFORCEMENT_TYPES = [
 ENFORCEMENT_STATUSES = [
     ('active', 'نشط'), ('completed', 'مكتمل'), ('suspended', 'معلق'), ('cancelled', 'ملغي'),
 ]
+# Collection method codes — stored as-is in collection_method. Legacy free-text
+# values stay readable since the template falls back to the raw string when
+# the code isn't in the map.
+COLLECTION_METHODS = [
+    ('bank_transfer', 'تحويل بنكي'),
+    ('cash', 'نقداً'),
+    ('check', 'شيك'),
+]
 
 
 @enforcement_bp.route('/')
@@ -110,7 +118,9 @@ def show(id):
     actions = enforcement.actions.all()
     type_map = dict(ENFORCEMENT_TYPES)
     return render_template('enforcement/show.html', enforcement=enforcement,
-                           collections=collections, actions=actions, type_map=type_map)
+                           collections=collections, actions=actions, type_map=type_map,
+                           collection_methods=COLLECTION_METHODS,
+                           collection_method_map=dict(COLLECTION_METHODS))
 
 
 @enforcement_bp.route('/<int:id>/add-collection', methods=['POST'])
